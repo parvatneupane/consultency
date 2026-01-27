@@ -15,7 +15,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const res = await api.post("/login", { email, password });
+      const res = await api.post("api/login", { email, password });
 
       // Step 3: Save token if your controller returns one (optional)
       if (res.data.token) {

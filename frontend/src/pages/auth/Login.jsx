@@ -15,10 +15,6 @@ export default function Login() {
     setLoading(true);
 
     try {
-      // Step 1: Get CSRF cookie
-      await api.get("/sanctum/csrf-cookie"); // Laravel sets XSRF-TOKEN cookie
-
-      // Step 2: Send login request
       const res = await api.post("/login", { email, password });
 
       // Step 3: Save token if your controller returns one (optional)

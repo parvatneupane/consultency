@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, UserPlus, Users, Briefcase } from "lucide-react";
+import { LayoutDashboard, UserPlus, Users, Briefcase, BadgeCheck } from "lucide-react";
 
 export default function AdminLayout({ children }) {
   const location = useLocation();
@@ -14,8 +14,9 @@ export default function AdminLayout({ children }) {
 
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-gray-100 to-gray-200">
+      
       {/* Sidebar */}
-      <aside className="w-72 bg-white shadow-2xl flex flex-col">
+      <aside className="w-72 bg-white shadow-2xl flex flex-col fixed left-0 top-0 h-screen z-50">
         {/* Logo */}
         <div className="p-6 border-b">
           <h1 className="text-3xl font-extrabold text-orange-600 tracking-wide">
@@ -25,35 +26,33 @@ export default function AdminLayout({ children }) {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-5 space-y-2">
-          <Link to="/dashboard" className={isActive("/") ? activeClass : normalClass}>
+        <nav className="flex-1 p-5 space-y-2 overflow-y-auto">
+          <Link to="/dashboard" className={isActive("/dashboard") ? activeClass : normalClass}>
             <LayoutDashboard size={20} />
             Dashboard
           </Link>
 
-          <Link
-            to="/addcustomer"
-            className={isActive("/addcustomer") ? activeClass : normalClass}
-          >
+          <Link to="/addcustomer" className={isActive("/addcustomer") ? activeClass : normalClass}>
             <UserPlus size={20} />
             Add Customer
           </Link>
 
-          <Link
-            to="/viewcustomer"
-            className={isActive("/viewcustomer") ? activeClass : normalClass}
-          >
+          <Link to="/viewcustomer" className={isActive("/viewcustomer") ? activeClass : normalClass}>
             <Users size={20} />
             View Customer
           </Link>
 
-          <Link
-            to="/viewemployee"
-            className={isActive("/viewemployee") ? activeClass : normalClass}
-          >
+          <Link to="/viewemployee" className={isActive("/viewemployee") ? activeClass : normalClass}>
             <Briefcase size={20} />
             View Employee
           </Link>
+
+          
+          <Link to="/applicants" className={isActive("/applicants") ? activeClass : normalClass}>
+            <BadgeCheck size={20} />
+            Applicants
+          </Link>
+
         </nav>
 
         {/* Footer */}
@@ -63,7 +62,7 @@ export default function AdminLayout({ children }) {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-10">
+      <main className="flex-1 p-10 pl-72">
         <div className="bg-white rounded-2xl shadow-xl p-8 min-h-full">
           {children}
         </div>
@@ -71,3 +70,4 @@ export default function AdminLayout({ children }) {
     </div>
   );
 }
+

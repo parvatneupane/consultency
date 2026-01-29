@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../api"; // your axios instance
+  import { ToastContainer, toast } from 'react-toastify';
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -11,21 +12,20 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
 
     try {
       const res = await api.post("api/login", { email, password });
 
-      // Step 3: Save token if your controller returns one (optional)
-      if (res.data.token) {
-        localStorage.setItem("auth_token", res.data.token);
-      }
-
-      // Step 4: Redirect to dashboard
-      navigate("/dashboard");
+      console.log(res);
+      
+      
+if(res.status === 200 && res.data.token){
+  localStorage.setItem("auth_token", res.data.token);
+  navigate("/dashboard");
+}
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      toast(err.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -33,6 +33,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-300">
+      <ToastContainer />
       <div className="bg-white w-full max-w-md p-8 rounded-2xl shadow-xl">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">
           Welcome Back

@@ -2,6 +2,8 @@ import api from "../../api";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+  import { ToastContainer, toast } from 'react-toastify';
+
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -9,18 +11,16 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
 
 
-    const handleRegister = async (e) => {
+const handleRegister = async (e) => {
   e.preventDefault();
-  setError("");
   setLoading(true);
 
   if (password !== confirmPassword) {
-    setError("Passwords do not match");
+    toast("Passwords do not match");
     setLoading(false);
     return;
   }
@@ -33,23 +33,35 @@ export default function Register() {
       password_confirmation: confirmPassword,
     });
 
-    localStorage.setItem("auth_token", res.data.token);
+    console.log(res);
     navigate("/login");
-  } catch (err) {
-    setError(err.response?.data?.message || "Registration failed");
-  } finally {
+  }  catch (err) {
+
+  if (err.response?.status === 422) {
+    const errors = err.response.data.errors;
+    const len = Object.keys(errors).length
+
+    for(let i=0; i< len ; i++){
+    const error = Object.values(errors)[i][0];
+      toast.error(error)
+
+    }
+
+
+
+  } else {
+    toast("Something went wrong. Please try again.");
+  }} finally {
     setLoading(false);
   }
 };
 
-{error && (
-  <div className="bg-red-100 text-red-700 p-2 rounded text-sm text-center">
-    {error}
-  </div>
-)}
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 to-green-300">
+        <ToastContainer />
+
+
       <div className="bg-white w-full max-w-md p-8 rounded-2xl shadow-xl">
 
         {/* Title */}
@@ -118,7 +130,7 @@ export default function Register() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-green-600 text-white py-2.5 rounded-lg hover:bg-green-700 transition font-semibold disabled:opacity-50"
+              className="w-full bg-green-600 cursor-pointer text-white py-2.5 rounded-lg hover:bg-green-700 transition font-semibold disabled:opacity-50"
             >
               {loading ? "Creating account..." : "Register"}
             </button>

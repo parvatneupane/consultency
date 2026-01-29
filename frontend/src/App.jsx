@@ -4,6 +4,7 @@ import Dashboard from "./pages/adminpages/Dashboard";
 import AddCustomer from "./pages/adminpages/AddCustomer";
 import ViewCustomer from "./pages/adminpages/ViewCustomer";
 import ViewEmployee from "./pages/adminpages/ViewEmployee";
+import Applicants from "./pages/adminpages/Applicants";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import { LogIn } from "lucide-react";
@@ -19,7 +20,8 @@ import { LogIn } from "lucide-react";
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/addcustomer" element={<AddCustomer />} />
             <Route path="/viewcustomer" element={<ViewCustomer />} />
-            <Route path="/viewemployee" element={<ViewEmployee/>} />
+            <Route path="/viewemployee" element={<ViewEmployee />} />
+            <Route path="/applicants" element={<Applicants />} />
           </Routes>
        
           </BrowserRouter>

@@ -18,13 +18,12 @@ const [referralType, setReferralType] = useState("");
 
           {/* Customer Name */}
           <div>
-            <Users  color="blue" strokeWidth={1} className="inline animate-bounce" />
             <label className=" text-sm font-medium text-gray-700 mb-1">
               Customer Name
             </label>
             <input
               type="text"
-              name="customername"
+              name="c_name"
               required
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
@@ -38,7 +37,7 @@ const [referralType, setReferralType] = useState("");
             </label>
             <input
               type="email"
-              name="email"
+              name="c_email"
               required
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
@@ -51,7 +50,7 @@ const [referralType, setReferralType] = useState("");
             </label>
             <input
               type="text"
-              name="address"
+              name="c_address"
               required
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
@@ -64,7 +63,7 @@ const [referralType, setReferralType] = useState("");
             </label>
             <input
               type="text"
-              name="phone"
+              name="c_phone"
               required
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />

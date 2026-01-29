@@ -1,32 +1,10 @@
 import AdminLayout from "../AdminLayout";
+import CustomerCard from "../../components/admincomponents/CustomerCard";
 
 export default function ViewCustomer() {
     return (
         <AdminLayout>
-        <div>
-        <h2 className="text-2xl font-bold">View Customer Page</h2>
-<table className="w-full mt-4 border border-gray-400 border-collapse">
-  <thead>
-    <tr >
-      <th className="border border-gray-400 px-4 py-2 text-left">Name</th>
-      <th className="border border-gray-400 px-4 py-2 text-left">Mobile</th>
-      <th className="border border-gray-400 px-4 py-2 text-left">Address</th>
-      <th className="border border-gray-400 px-4 py-2 text-left">City</th>
-      <th className="border border-gray-400 px-4 py-2 text-left">Study Time</th>
-      <th className="border border-gray-400 px-4 py-2 text-left">Course</th>
-      <th className="border border-gray-400 px-4 py-2 text-left">Status</th>
-      <th className="border border-gray-400 px-4 py-2 text-left">Action</th>
-    </tr>
-  </thead>
-                <tbody>
-                    <tr>
-                <td> </td>
-                </tr>
-                </tbody>
-            </table>
-            
-
-        </div>
+            <CustomerCard/>
         </AdminLayout>
     );
 }

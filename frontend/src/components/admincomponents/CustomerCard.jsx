@@ -1,66 +1,72 @@
-import { Phone, MapPin, BookOpen, Clock, UserCheck } from "lucide-react";
-export default function CustomerCard() {
-    return (
-<div className="p-6">
-  <h2 className="text-2xl font-bold mb-6">Customer Details</h2>
+import { Phone, MapPin, BookOpen, Clock, Eye, User } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-  {/* Grid Container */}
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-    
-    {/* Customer Card */}
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-2xl transition-all duration-300">
+export default function CustomerCard({ customer }) {
+  const navigate = useNavigate();
+
+  // 🔹 Demo data (used if no real customer passed)
+  const demoCustomer = {
+    name: "Parvat Neupane",
+    phone: "98XXXXXXXX",
+    address: "Gaindakot, Nawalpur",
+    study_time: "Morning",
+    course: "Japanese Language",
+  };
+
+  const data = customer || demoCustomer;
+
+  return (
+    <div
+      onClick={() => navigate("/customer_view", { state: data })}
+      className=" group cursor-pointer bg-white rounded-2xl shadow-lg border border-gray-100 p-6
+      hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden h-56 w-80"
+    >
+      {/* Glow Accent */}
+      <div className="absolute inset-0 bg-gradient-to-r from-orange-100/40 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
+
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-semibold text-gray-800">
-          Parvat
-        </h3>
+      <div className="relative flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
+            <User className="text-orange-600" size={18} />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-800">
+            {data.name}
+          </h3>
+        </div>
+
+        <Eye className="text-orange-500 group-hover:scale-110 transition" size={20} />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700">
+      {/* Info Grid */}
+      <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700 text-sm">
         <div className="flex items-center gap-2">
-          <Phone size={18} className="text-orange-600" />
-          <span>9845268281</span>
+          <Phone size={16} className="text-orange-600" />
+          <span>{data.phone}</span>
         </div>
 
         <div className="flex items-center gap-2">
-          <MapPin size={18} className="text-orange-600" />
-          <span>Gaindakot</span>
+          <MapPin size={16} className="text-orange-600" />
+          <span>{data.address}</span>
         </div>
 
         <div className="flex items-center gap-2">
-          <Clock size={18} className="text-orange-600" />
-          <span>Morning</span>
+          <Clock size={16} className="text-orange-600" />
+          <span>{data.study_time}</span>
         </div>
 
         <div className="flex items-center gap-2">
-          <BookOpen size={18} className="text-orange-600" />
-          <span>Korean Language</span>
-        </div>
-
-        <div className="flex items-center gap-2 sm:col-span-2">
-          <UserCheck size={18} className="text-orange-600" />
-          <span>Gaindakot</span>
+          <BookOpen size={16} className="text-orange-600" />
+          <span>{data.course}</span>
         </div>
       </div>
 
-      {/* Actions */}
-      <div className="flex justify-end gap-3 mt-6">
-        <button className="px-4 py-2 rounded-xl bg-blue-100 text-blue-700 hover:bg-blue-200 transition">
-          Edit
-        </button>
-        <button className="px-4 py-2 rounded-xl bg-red-100 text-red-700 hover:bg-red-200 transition">
-          Delete
-        </button>
+      {/* Footer Badge */}
+      <div className="relative mt-4 flex justify-end">
+        <span className="px-3 py-1 text-xs rounded-full bg-orange-100 text-orange-700">
+          View Profile
+        </span>
       </div>
     </div>
-
-
-    </div>
-
-  </div>
-
-
-
   );
 }
-

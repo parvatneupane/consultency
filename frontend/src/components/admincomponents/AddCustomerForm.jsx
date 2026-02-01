@@ -1,29 +1,97 @@
 import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+
 import { Users,Plus } from 'lucide-react';
 export default function AddCustomerForm() {
 
-    const [isReferred, setIsReferred] = useState("no");
+const [isReferred, setIsReferred] = useState("no");
 const [referralType, setReferralType] = useState("");
+const [loading, setLoading] = useState(false);
+const token = localStorage.getItem("auth_token");
+
+console.log(token)
+
+
+const handleaddcustomer = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+
+  const formData = new FormData(e.target);
+  const token = localStorage.getItem("auth_token");
+
+  const customerData = {
+    name: formData.get("name"),
+    email: formData.get("email"),
+    address: formData.get("address"),
+    phone: formData.get("phone"),
+    father_name: formData.get("father_name"),
+    mother_name: formData.get("mother_name"),
+    father_phone: formData.get("father_phone"),
+    mother_phone: formData.get("mother_phone"),
+    gender: formData.get("gender"),
+    education: formData.get("education"),
+    course: formData.get("course"),
+    study_time: formData.get("study_time"),
+    desire_city: formData.get("desire_city"),
+    remarks: formData.get("remarks"),
+
+    referral_type: isReferred === "yes" ? referralType : null,
+    referral_name:
+      isReferred === "yes" ? formData.get("referral_name") : null,
+    referral_phone:
+      isReferred === "yes" ? formData.get("referral_phone") : null,
+  };
+
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/customers", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(customerData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to add customer");
+    }
+
+    toast.success("Customer added successfully 🎉");
+    e.target.reset();
+    setIsReferred("no");
+    setReferralType("");
+  } catch (error) {
+    toast.error(error.message || "Something went wrong ❌");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   return (
 
-    
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
-      <div className="bg-white w-full max-w-2xl rounded-xl shadow-lg p-8">
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800 text-center">
-          Add Customer 
-        </h2>
 
-        <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+
+<div className="min-h-screen bg-gray-100 flex items-center justify-center pl-6">
+  <ToastContainer />
+  <div className="bg-white w-full max-w-2xl rounded-xl shadow-lg p-8">
+
+
+
+        <form className="grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleaddcustomer}>
 
           {/* Customer Name */}
           <div>
             <label className=" text-sm font-medium text-gray-700 mb-1">
               Customer Name
             </label>
-            <input
-              type="text"
-              name="c_name"
+            <input type="text"
+              name="name"
               required
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
@@ -37,7 +105,7 @@ const [referralType, setReferralType] = useState("");
             </label>
             <input
               type="email"
-              name="c_email"
+              name="email"
               required
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
@@ -50,7 +118,7 @@ const [referralType, setReferralType] = useState("");
             </label>
             <input
               type="text"
-              name="c_address"
+              name="address"
               required
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
@@ -63,7 +131,7 @@ const [referralType, setReferralType] = useState("");
             </label>
             <input
               type="text"
-              name="c_phone"
+              name="phone"
               required
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
@@ -76,7 +144,7 @@ const [referralType, setReferralType] = useState("");
             </label>
             <input
               type="text"
-              name="fathername"
+              name="father_name"
               required
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
@@ -89,7 +157,7 @@ const [referralType, setReferralType] = useState("");
             </label>
             <input
               type="text"
-              name="mothername"
+              name="mother_name"
               required
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
@@ -102,7 +170,7 @@ const [referralType, setReferralType] = useState("");
             </label>
             <input
               type="text"
-              name="fatherphone"
+              name="father_phone"
               required
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
@@ -115,7 +183,7 @@ const [referralType, setReferralType] = useState("");
             </label>
             <input
               type="text"
-              name="motherphone"
+              name="mother_phone"
               required
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
@@ -176,7 +244,7 @@ const [referralType, setReferralType] = useState("");
               Desire Study Time
             </label>
             <select
-              name="studytime"
+              name="study_time"
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
               <option value="morning">Morning</option>
@@ -192,7 +260,7 @@ const [referralType, setReferralType] = useState("");
             </label>
             <input
               type="text"
-              name="desirecity"
+              name="desire_city"
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
@@ -270,14 +338,14 @@ const [referralType, setReferralType] = useState("");
                 />
             </div>
 
-            {/* Referral Mobile */}
+            {/* Referral Phone */}
             <div>
                 <label className="block text-sm font-medium mb-1">
-                Referral Mobile Number
+                Referral Phone Number
                 </label>
                 <input
                 type="text"
-                name="referral_mobile"
+                name="referral_phone"
                 className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
                 placeholder="98XXXXXXXX"
                 />
@@ -309,8 +377,7 @@ const [referralType, setReferralType] = useState("");
             </label>
             <textarea
               name="followup"
-              rows="3"
-              required
+              rows="3"            
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             ></textarea>
           </div>
@@ -323,12 +390,14 @@ const [referralType, setReferralType] = useState("");
             >
               Reset
             </button>
-            <button
-              type="submit"
-              className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
-            >
-              Submit
-            </button>
+          <button
+            type="submit"
+            disabled={loading}
+            className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition disabled:opacity-50"
+          >
+            {loading ? "Saving..." : "Submit"}
+          </button>
+
           </div>
 
         </form>

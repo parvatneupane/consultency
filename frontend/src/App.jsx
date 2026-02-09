@@ -11,6 +11,7 @@ import Applicants from "./pages/adminpages/Applicants";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import { LogIn } from "lucide-react";
+import UpdateCustomerForm from "./components/admincomponents/UpdateCustomerForm";
 
 
  export default function  App() {
@@ -23,6 +24,7 @@ import { LogIn } from "lucide-react";
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/addcustomer" element={<AddCustomer />} />
             <Route path="/customer" element={<Customer />} />
+            <Route path="/customer_edit" element={<UpdateCustomerForm />} />
             <Route path="/customer_view" element={<CustomerView />} />
             <Route path="/employee" element={<Employee />} />
             <Route path="/addemployee" element={<AddEmployee />} />

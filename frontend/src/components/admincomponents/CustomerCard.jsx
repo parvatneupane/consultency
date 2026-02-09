@@ -4,14 +4,7 @@ import { useNavigate } from "react-router-dom";
 export default function CustomerCard({ customer }) {
   const navigate = useNavigate();
 
-  // 🔹 Demo data (used if no real customer passed)
-  const demoCustomer = {
-    name: "Parvat Neupane",
-    phone: "98XXXXXXXX",
-    address: "Gaindakot, Nawalpur",
-    study_time: "Morning",
-    course: "Japanese Language",
-  };
+
 
   const data = customer || demoCustomer;
 

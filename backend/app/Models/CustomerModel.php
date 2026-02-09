@@ -10,6 +10,7 @@ class CustomerModel extends Model
     protected $table = 'customer';
 
     protected $fillable = [
+        'user_id',
         'name',
         'email',
         'address',
@@ -30,4 +31,7 @@ class CustomerModel extends Model
         'status',
     ];
 
+ public function followup(){
+  return  $this->hasMany(FollowUpModel::class ,'cus_id');
+  }  
 }

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import api from "../../api";
 
 import { Users,Plus } from 'lucide-react';
 export default function AddCustomerForm() {
@@ -9,7 +10,6 @@ const [referralType, setReferralType] = useState("");
 const [loading, setLoading] = useState(false);
 const token = localStorage.getItem("auth_token");
 
-console.log(token)
 
 
 const handleaddcustomer = async (e) => {
@@ -43,21 +43,18 @@ const handleaddcustomer = async (e) => {
   };
 
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/customers", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(customerData),
-    });
+const response = await api.post(
+  "api/customers",
+  customerData, 
+  {
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to add customer");
-    }
 
     toast.success("Customer added successfully 🎉");
     e.target.reset();
@@ -145,7 +142,7 @@ const handleaddcustomer = async (e) => {
             <input
               type="text"
               name="father_name"
-              required
+              
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
@@ -158,7 +155,7 @@ const handleaddcustomer = async (e) => {
             <input
               type="text"
               name="mother_name"
-              required
+              
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
@@ -171,7 +168,7 @@ const handleaddcustomer = async (e) => {
             <input
               type="text"
               name="father_phone"
-              required
+              
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
@@ -184,7 +181,6 @@ const handleaddcustomer = async (e) => {
             <input
               type="text"
               name="mother_phone"
-              required
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>

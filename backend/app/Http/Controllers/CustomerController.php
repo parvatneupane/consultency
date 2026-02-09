@@ -4,19 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\CustomerModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CustomerController extends Controller
 {
 public function index(){
-    $data = CustomerModel::where('status', 0)->get();
+    $id = Auth::user()->id;
+    $data = CustomerModel::with('followup')->where('status', 0)->where('user_id',$id)->get();
      return response()->json([
             'message' => 'Customer fetched successfully',
             'data' => $data
         ], 201);
 }
+
     //
     public function store(Request $request)
     {
+        // Log::info($request->all());
         $validated = $request->validate([
             'name'            => 'required|string|max:255',
             'email'           => 'required|email|max:255',
@@ -37,6 +42,10 @@ public function index(){
             'remarks'        => 'nullable|string',
             'status'         => 'nullable|integer',
         ]);
+        Log(Auth::user()->id);
+
+$validated['user_id'] = Auth::user()->id;
+        Log::info($validated);
 
         $customer = CustomerModel::create($validated);
 

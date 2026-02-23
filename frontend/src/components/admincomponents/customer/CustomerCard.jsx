@@ -1,17 +1,52 @@
 import { Phone, MapPin, BookOpen, Clock, Eye, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../api";
+import { toast } from "react-toastify";
 
-export default function CustomerCard({ customer }) {
+export default function CustomerCard({ customer ,refresh }) {
   const navigate = useNavigate();
 
-
-
   const data = customer || demoCustomer;
+
+  // 🔹 Convert customer → applicant
+  const handleConvert = async (e) => {
+  e.stopPropagation(); // prevent card click navigation
+
+  const confirmConvert = window.confirm(
+    "Do you want to convert this customer to applicant?"
+  );
+
+  if (!confirmConvert) return;
+
+  try {
+    const token = localStorage.getItem("auth_token");
+
+    await api.post(
+      `api/customers/approve-to-applicant/${data.id}`,
+      {}, 
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+      refresh();
+    toast.success("Customer converted to applicant successfully!");
+
+    // navigate("/applicants");
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to convert customer.");
+  }
+};
+
 
   return (
     <div
       onClick={() => navigate("/customer_view", { state: data })}
-      className=" group cursor-pointer bg-white rounded-2xl shadow-lg border border-gray-100 p-6
+      className="group cursor-pointer bg-white rounded-2xl shadow-lg border border-gray-100 p-6
       hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden h-56 w-80"
     >
       {/* Glow Accent */}
@@ -54,11 +89,19 @@ export default function CustomerCard({ customer }) {
         </div>
       </div>
 
-      {/* Footer Badge */}
-      <div className="relative mt-4 flex justify-end">
+      {/* Footer */}
+      <div className="relative mt-4 flex justify-between items-center">
         <span className="px-3 py-1 text-xs rounded-full bg-orange-100 text-orange-700">
           View Profile
         </span>
+
+        {/* 🔹 Convert Button */}
+        <button
+          onClick={handleConvert}
+          className="px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 transition"
+        >
+          Convert to Applicant
+        </button>
       </div>
     </div>
   );

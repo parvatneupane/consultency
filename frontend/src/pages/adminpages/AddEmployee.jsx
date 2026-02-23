@@ -1,5 +1,5 @@
 import AdminLayout from "../AdminLayout";
-import AddEmployeeForm from "../../components/admincomponents/AddEmployeeForm";
+import AddEmployeeForm from "../../components/admincomponents/employee/AddEmployeeForm";
 
 export default function AddEmployee() {
     return (

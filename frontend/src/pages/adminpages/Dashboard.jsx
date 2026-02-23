@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import DashboardCarts from "../../components/admincomponents/dashboardcarts";
+import DashboardCarts from "../../components/admincomponents/dashboard/DashboardCarts";
 import { GraduationCap,IdCardLanyard,FileUser } from "lucide-react";
 
 import AdminLayout from "../AdminLayout";

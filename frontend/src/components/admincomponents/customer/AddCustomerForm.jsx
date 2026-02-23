@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import api from "../../api";
+import api from "../../../api";
 
 import { Users,Plus } from 'lucide-react';
 export default function AddCustomerForm() {

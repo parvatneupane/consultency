@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { ArrowLeft } from "lucide-react";
-import api from "../../api";
+import api from "../../../api";
 
 export default function UpdateCustomerForm({ onUpdated }) {
   const { state } = useLocation(); 

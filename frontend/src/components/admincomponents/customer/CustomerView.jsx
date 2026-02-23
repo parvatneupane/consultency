@@ -1,5 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import CustomerFollowup from "./CustomerFollowup";
+import api from "../../../api";
+
 import { useState } from "react";
 import {
   User,
@@ -20,6 +22,27 @@ export default function CustomerView() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const customer = state;
+  const token = localStorage.getItem("auth_token");
+
+  const handleDelete = async () => {
+  if (!window.confirm("Are you sure you want to delete this customer?")) {
+    return;
+  }
+
+  try {
+    await api.delete(`/api/customers/${customer.id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    alert("Customer deleted successfully!");
+    navigate("/customer"); // redirect to customer list page
+  } catch (error) {
+    console.error("Delete failed:", error);
+    alert("Failed to delete customer.");
+  }
+};
 
 
 
@@ -56,22 +79,18 @@ export default function CustomerView() {
 
 
           {/* Delete Button */}
-          <button
-            onClick={() => {
-              if (window.confirm("Are you sure you want to delete this customer?")) {
-                console.log("Delete customer:", customer.id);
-                navigate(-1);
-              }
-            }}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl 
-            bg-gradient-to-r from-red-500 to-red-600 
-            text-white font-medium shadow-md 
-            hover:shadow-lg hover:from-red-600 hover:to-red-700 
-            active:scale-95 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-red-300"
-          >
-            <Trash2 size={18} />
-            Delete
-          </button>
+              <button
+                onClick={handleDelete}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl 
+                bg-gradient-to-r from-red-500 to-red-600 
+                text-white font-medium shadow-md 
+                hover:shadow-lg hover:from-red-600 hover:to-red-700 
+                active:scale-95 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-red-300"
+              >
+                <Trash2 size={18} />
+                Delete
+              </button>
+
 
           {/* Back Button */}
           <button

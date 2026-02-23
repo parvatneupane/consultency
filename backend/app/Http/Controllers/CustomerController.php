@@ -105,18 +105,36 @@ $validated['user_id'] = Auth::user()->id;
     }
 
     // DELETE /api/customers/{id}
-    public function destroy($id)
+   public function destroy($id)
     {
-        $customer = CustomerModel::find($id);
+        $customer = CustomerModel::where('id', $id)
+                       ->first();
 
         if (!$customer) {
-            return response()->json(['message' => 'Customer not found'], 404);
+            return response()->json(['message' => 'customer not found'], 404);
         }
 
         $customer->delete();
 
         return response()->json([
-            'message' => 'Customer deleted successfully'
+            'message' => 'customer deleted successfully'
         ], 200);
     }
+
+     public function approveToApplicant($id)
+    {
+        $data = CustomerModel::find($id);
+
+        if (!$data) {
+            return response()->json(['message' => 'Employee not found'], 404);
+        }
+        $data->update(['status' => 1]);
+                Log::info($data);
+
+        return response()->json([
+            'message' => 'Employee approved successfully',
+            'data' => $data
+        ], 200);
+    }
+
 }

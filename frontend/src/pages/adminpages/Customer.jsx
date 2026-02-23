@@ -1,5 +1,5 @@
 import AdminLayout from "../AdminLayout";
-import CustomerCard from "../../components/admincomponents/CustomerCard";
+import CustomerCard from "../../components/admincomponents/customer/CustomerCard";
 import { Link } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
@@ -117,7 +117,7 @@ export default function Customer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {paginatedCustomers.length > 0 ? (
             paginatedCustomers.map((customer) => (
-              <CustomerCard key={customer.id} customer={customer} />
+              <CustomerCard key={customer.id} customer={customer} refresh={fetchCustomers} />
             ))
           ) : (
             <p className="text-gray-500 col-span-full text-center">

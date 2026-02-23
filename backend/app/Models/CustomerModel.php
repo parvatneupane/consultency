@@ -34,4 +34,8 @@ class CustomerModel extends Model
  public function followup(){
   return  $this->hasMany(FollowUpModel::class ,'cus_id');
   }  
+     public function applicants()
+    {
+        return $this->hasOne(Applicant::class,'cus_id');
+    }  
 }

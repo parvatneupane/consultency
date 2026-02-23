@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { Plus, Edit, Trash2, MessageSquare, X } from "lucide-react";
-import api from "../../api";
+import api from "../../../api";
 
 export default function CustomerFollowup({ data = [], cus_id }) {
   const [followUps, setFollowUps] = useState([]);

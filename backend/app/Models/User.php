@@ -22,7 +22,7 @@ class User extends Authenticatable
 
    
     protected $hidden = [
-        
+        'role',
         'password',
         'remember_token',
     ];
@@ -34,5 +34,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function employee()
+    {
+        return $this->hasOne(EmployeeModel::class);
     }
 }

@@ -1,6 +1,6 @@
 
 import AdminLayout from "../AdminLayout";
-import AddCustomerForm from "../../components/admincomponents/AddCustomerForm";
+import AddCustomerForm from "../../components/admincomponents/customer/AddCustomerForm";
 
 export default function AddCustomer() {
     return (

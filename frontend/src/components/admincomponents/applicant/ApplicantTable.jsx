@@ -3,13 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 export default function ApplicantsTable({ applicants }) {
   const navigate = useNavigate();
-
-  const statusStyles = {
-    Pending: "bg-yellow-100 text-yellow-700",
-    Interview: "bg-blue-100 text-blue-700",
-    Approved: "bg-green-100 text-green-700",
-    Rejected: "bg-red-100 text-red-700",
-  };
+console.log(applicants);
+ 
 
   return (
     <div className="overflow-x-auto bg-white rounded-2xl shadow-lg border border-gray-100">
@@ -18,11 +13,14 @@ export default function ApplicantsTable({ applicants }) {
         <thead className="bg-orange-50 text-gray-700 uppercase text-xs">
           <tr>
             <th className="px-6 py-4 text-left font-semibold">Applicant</th>
-            <th className="px-6 py-4 text-left font-semibold">Phone</th>
+             <th className="px-6 py-4 text-left font-semibold">Branch</th>
+            
             <th className="px-6 py-4 text-left font-semibold">Address</th>
-            <th className="px-6 py-4 text-left font-semibold">Study Time</th>
-            <th className="px-6 py-4 text-left font-semibold">Course</th>
-            <th className="px-6 py-4 text-left font-semibold">Status</th>
+            <th className="px-6 py-4 text-left font-semibold">Apllied city</th>
+            <th className="px-6 py-4 text-left font-semibold">Applied College</th>
+            <th className="px-6 py-4 text-left font-semibold">Intake</th>
+            <th className="px-6 py-4 text-left font-semibold">COE Status</th>
+           
             <th className="px-6 py-4 text-center font-semibold">Action</th>
           </tr>
         </thead>
@@ -46,13 +44,13 @@ export default function ApplicantsTable({ applicants }) {
                   </div>
                 </td>
 
-                {/* Phone */}
-                <td className="px-6 py-4 whitespace-nowrap">
+               <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center gap-2">
-                    <Phone size={14} className="text-orange-600 flex-shrink-0" />
-                    <span>{applicant.phone || "N/A"}</span>
+                    <Clock size={14} className="text-orange-600 flex-shrink-0" />
+                    <span>{applicant.user?.name || "N/A"}</span>
                   </div>
                 </td>
+            
 
                 {/* Address */}
                 <td className="px-6 py-4">
@@ -66,7 +64,7 @@ export default function ApplicantsTable({ applicants }) {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center gap-2">
                     <Clock size={14} className="text-orange-600 flex-shrink-0" />
-                    <span>{applicant.study_time || "N/A"}</span>
+                    <span>{applicant.applicants?.applied_college || "N/A"}</span>
                   </div>
                 </td>
 
@@ -74,20 +72,21 @@ export default function ApplicantsTable({ applicants }) {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center gap-2">
                     <BookOpen size={14} className="text-orange-600 flex-shrink-0" />
-                    <span>{applicant.course || "N/A"}</span>
+                    <span>{applicant.applicants?.applied_city || "N/A"}</span>
                   </div>
                 </td>
 
-                {/* Status */}
+                {/* Intake */}
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`inline-flex px-3 py-1 text-xs font-medium rounded-full ${
-                      statusStyles[applicant.status] || "bg-gray-100 text-gray-600"
-                    }`}
-                  >
-                    {applicant.status || "Pending"}
-                  </span>
+                  <span>{applicant.applicants?.intake || "N/A"}</span>
                 </td>
+
+                {/* COE Status */}
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span>{applicant.applicants?.coe?.status || "N/A" }</span>
+                </td>
+
+        
 
                 {/* Action */}
                 <td className="px-6 py-4 text-center whitespace-nowrap">
@@ -105,7 +104,7 @@ export default function ApplicantsTable({ applicants }) {
             ))
           ) : (
             <tr>
-              <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+              <td colSpan={9} className="px-6 py-8 text-center text-gray-500">
                 No applicants found
               </td>
             </tr>

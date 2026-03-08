@@ -14,9 +14,12 @@ return new class extends Migration
         Schema::create('applicantcoe', function (Blueprint $table) {
             $table->id();
             $table->foreignId('applicant_id')->constrained('applicant')->onDelete('cascade');
-            $table->string('document');
+            $table->string('document')->nullable();
+            $table->string('joined_school')->nullable();
+            $table->string('subject')->nullable();
+            $table->string('city')->nullable();
             $table->string('remarks')->nullable();
-            $table->integer('status')->default(0);
+            $table->string('status')->default('Pending');
             $table->timestamps();
         });
     }

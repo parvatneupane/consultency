@@ -1,71 +1,84 @@
 import { useState } from "react";
+import api from "../../../api";
 
-export default function AddDocumentForm({ onCancel, onSubmit }) {
-  const [documentTitle, setDocumentTitle] = useState("");
-  const [documentFile, setDocumentFile] = useState(null);
-
-  const handleSubmit = (e) => {
+export default function AddDocumentForm({ applicantId, onCancel, onUploaded }) {
+  const [title, setTitle] = useState("");
+  const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+const token = localStorage.getItem("auth_token");
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!documentTitle || !documentFile) {
-      alert("Please enter a document title and select a file.");
+    if (!title || !file) {
+      alert("Fill all fields");
       return;
     }
 
-    // 🔹 Send form data back to parent
-    onSubmit &&
-      onSubmit({
-        document_title: documentTitle,
-        document: documentFile,
+    const formData = new FormData();
+    formData.append("applicant_id", applicantId);
+    formData.append("document_title", title);
+    formData.append("document", file);
+    formData.append("status", 0);
+
+    try {
+      setLoading(true);
+
+      await api.post("api/document", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+           Authorization: `Bearer ${token}`,
+
+        },
       });
 
-    // 🔹 Reset form
-    setDocumentTitle("");
-    setDocumentFile(null);
+      setTitle("");
+      setFile(null);
+
+      onUploaded(); // tell parent to refresh
+    } catch (error) {
+      alert(error.response?.data?.message || "Upload failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white p-6 rounded-xl shadow border space-y-4"
-    >
-      <h2 className="text-xl font-semibold mb-4">Add New Document</h2>
+    <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow">
+      <h2 className="text-lg font-semibold mb-4">Add Document</h2>
 
-      {/* Document Title */}
-      <div>
-        <label className="text-sm text-gray-600">Document Title</label>
+      <div className="mb-4">
+        <label>Document Title</label>
         <input
           type="text"
-          value={documentTitle}
-          onChange={(e) => setDocumentTitle(e.target.value)}
-          placeholder="Enter document title"
-          className="w-full mt-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full border p-2 mt-1"
         />
       </div>
 
-      {/* Document File */}
-      <div>
-        <label className="text-sm text-gray-600">Document File</label>
+      <div className="mb-4">
+        <label>Document File</label>
         <input
           type="file"
           accept=".jpg,.jpeg,.png,.pdf"
-          onChange={(e) => setDocumentFile(e.target.files[0])}
-          className="w-full mt-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+          onChange={(e) => setFile(e.target.files[0])}
+          className="w-full border p-2 mt-1"
         />
       </div>
 
-      {/* Buttons */}
-      <div className="flex gap-4 mt-4">
+      <div className="flex gap-3">
         <button
           type="submit"
-          className="bg-orange-500 text-white px-4 py-2 rounded-lg"
+          disabled={loading}
+          className="bg-orange-500 text-white px-4 py-2 rounded"
         >
-          Add Document
+          {loading ? "Uploading..." : "Add"}
         </button>
+
         <button
           type="button"
           onClick={onCancel}
-          className="bg-gray-300 px-4 py-2 rounded-lg"
+          className="bg-gray-300 px-4 py-2 rounded"
         >
           Cancel
         </button>

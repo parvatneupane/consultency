@@ -38,4 +38,13 @@ class CustomerModel extends Model
     {
         return $this->hasOne(Applicant::class,'cus_id');
     }  
+
+        public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
+
+
+
+//.................................

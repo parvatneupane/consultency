@@ -17,12 +17,15 @@ export default function Login() {
     try {
       const res = await api.post("api/login", { email, password });
 
-      console.log(res);
-      
+      // console.log(res);
       
 if(res.status === 200 && res.data.token){
   localStorage.setItem("auth_token", res.data.token);
+  localStorage.setItem("user", JSON.stringify(res.data.user));
+
   navigate("/dashboard");
+
+
 }
     } catch (err) {
       toast(err.response?.data?.message || "Login failed");

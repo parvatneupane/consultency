@@ -1,171 +1,239 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../../../api";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import AddIntakeForm from "./AddIntakeForm";
 
-export default function ApplicationInfoForm({
-  applicant,
-  onCancel,
-  onSubmit,
-}) {
+export default function ApplicationInfoForm({ applicant, onCancel, onSubmit }) {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("auth_token");
+
+  // Determine existing applicant data
+  const applicantData = Array.isArray(applicant.applicants)
+    ? applicant.applicants[0]
+    : applicant.applicants || null;
+
+  // Form state
   const [formData, setFormData] = useState({
-    applied_city: applicant?.applied_city || "",
-    applied_colllege: applicant?.applied_colllege || "",
-    intake: applicant?.intake || "",
-    coe_charge: applicant?.coe_charge || "",
-    documentation_charge: applicant?.documentation_charge || "",
-    coe_status: applicant?.coe_status || 0,
-    status: applicant?.status || "",
+    applied_city: "",
+    applied_college: "",
+    intake: "",
+    coe_charge: "",
+    documentation_charge: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [intakes, setIntakes] = useState([]); // State for intake list
+  const [showIntakeForm, setShowIntakeForm] = useState(false);
+
+  // Fetch intakes from API
+  const fetchIntakes = async () => {
+    try {
+      const res = await api.get("/api/intakes", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setIntakes(res.data.data || []);
+    } catch (err) {
+      console.error("Error fetching intakes:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchIntakes();
+  }, []);
+
+  // Populate form when applicantData changes
+  useEffect(() => {
+    if (applicantData) {
+      setFormData({
+        applied_city: applicantData.applied_city || "",
+        applied_college: applicantData.applied_college || "",
+        intake: applicantData.intake || "",
+        coe_charge: applicantData.coe_charge || "",
+        documentation_charge: applicantData.documentation_charge || "",
+      });
+    }
+  }, [applicantData]);
+
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  // When new intake is added via + Add
+  const handleAddIntake = (newIntake) => {
+    setIntakes((prev) => [...prev, newIntake]);
+    setFormData((prev) => ({ ...prev, intake: newIntake.id }));
+    setShowIntakeForm(false);
+  };
+
+  // Submit form (POST if no applicantData, PUT if exists)
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    // 🔥 You can replace this with API call later
-    console.log("Updated Data:", formData);
+    try {
+      if (applicantData && applicantData.id) {
+        // Update existing applicant
+        await api.put(`api/applicant/${applicantData.id}`, formData, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        toast.success("Applicant updated successfully 🎉");
+      } else {
+        // Create new applicant
+        const payload = {
+          ...formData,
+          cus_id: applicant.id, // Link to customer
+        };
+        await api.post("api/applicant", payload, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        toast.success("Applicant created successfully 🎉");
+      }
 
-    if (onSubmit) onSubmit(formData);
+      if (onSubmit) onSubmit(formData);
+      setTimeout(() => navigate("/applicants"), 1000);
+    } catch (err) {
+      console.error("Error:", err.response?.data || err.message);
+
+      if (err.response?.status === 422) {
+        const errors = err.response.data.errors || {};
+        Object.values(errors).forEach((msgs) =>
+          msgs.forEach((msg) => toast.error(msg))
+        );
+      } else {
+        toast.error(err.message || "Something went wrong ❌");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
+
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white p-6 rounded-xl shadow border"
-    >
-      <h2 className="text-xl font-semibold mb-6">
-        Update Application Details
-      </h2>
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start p-6">
+      <ToastContainer />
 
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Applied City */}
-        <Input
-          label="Applied City"
-          name="applied_city"
-          value={formData.applied_city}
-          onChange={handleChange}
-        />
-
-        {/* Applied College */}
-        <Input
-          label="Applied College"
-          name="applied_colllege"
-          value={formData.applied_colllege}
-          onChange={handleChange}
-        />
-
-        {/* Intake */}
-        <Input
-          label="Intake"
-          name="intake"
-          value={formData.intake}
-          onChange={handleChange}
-        />
-
-        {/* COE Charge */}
-        <Input
-          label="COE Charge"
-          name="coe_charge"
-          type="number"
-          value={formData.coe_charge}
-          onChange={handleChange}
-        />
-
-        {/* Documentation Charge */}
-        <Input
-          label="Documentation Charge"
-          name="documentation_charge"
-          type="number"
-          value={formData.documentation_charge}
-          onChange={handleChange}
-        />
-
-        {/* COE Status */}
-        <Select
-          label="COE Status"
-          name="coe_status"
-          value={formData.coe_status}
-          onChange={handleChange}
-          options={[
-            { value: 0, label: "Pending" },
-            { value: 1, label: "Approved" },
-            { value: 2, label: "Rejected" },
-          ]}
-        />
-
-        {/* Application Status */}
-        <Select
-          label="Application Status"
-          name="status"
-          value={formData.status}
-          onChange={handleChange}
-          options={[
-            { value: "Pending", label: "Pending" },
-            { value: "Interview", label: "Interview" },
-            { value: "Approved", label: "Approved" },
-            { value: "Rejected", label: "Rejected" },
-          ]}
-        />
-      </div>
-
-      {/* Buttons */}
-      <div className="mt-8 flex gap-4">
-        <button
-          type="submit"
-          className="bg-orange-500 text-white px-5 py-2 rounded-lg"
-        >
-          Save Changes
-        </button>
-
-        <button
-          type="button"
-          onClick={onCancel}
-          className="bg-gray-300 px-5 py-2 rounded-lg"
-        >
-          Cancel
-        </button>
-      </div>
-    </form>
-  );
-}
-
-/* 🔹 Reusable Input */
-function Input({ label, name, value, onChange, type = "text" }) {
-  return (
-    <div>
-      <label className="text-sm text-gray-600">{label}</label>
-      <input
-        type={type}
-        name={name}
-        value={value}
-        onChange={onChange}
-        className="w-full mt-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
-      />
-    </div>
-  );
-}
-
-/* 🔹 Reusable Select */
-function Select({ label, name, value, onChange, options }) {
-  return (
-    <div>
-      <label className="text-sm text-gray-600">{label}</label>
-      <select
-        name={name}
-        value={value}
-        onChange={onChange}
-        className="w-full mt-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded-xl shadow w-full max-w-2xl"
       >
-        {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
+        <h2 className="text-xl font-semibold mb-6">
+          {applicantData ? "Update" : "Add"} Application Details
+        </h2>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          <div>
+            <label className="text-sm text-gray-600">Applied City</label>
+            <input
+              type="text"
+              name="applied_city"
+              value={formData.applied_city}
+              onChange={handleChange}
+              className="w-full mt-1 border rounded-lg px-3 py-2"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="text-sm text-gray-600">Applied College</label>
+            <input
+              type="text"
+              name="applied_college"
+              value={formData.applied_college}
+              onChange={handleChange}
+              className="w-full mt-1 border rounded-lg px-3 py-2"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="text-sm text-gray-600">Intake</label>
+            <div className="flex gap-2 mt-1">
+              <select
+                name="intake"
+                value={formData.intake}
+                onChange={handleChange}
+                className="w-full border rounded-lg px-3 py-2"
+                required
+              >
+                <option value="">Select Intake</option>
+                {intakes.map((item) => (
+                  <option key={item.id} value={item.name}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                onClick={() => setShowIntakeForm(true)}
+                className="bg-blue-500 text-white px-3 rounded-lg"
+              >
+                + Add
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm text-gray-600">COE Charge</label>
+            <input
+              type="number"
+              name="coe_charge"
+              value={formData.coe_charge}
+              onChange={handleChange}
+              className="w-full mt-1 border rounded-lg px-3 py-2"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="text-sm text-gray-600">Documentation Charge</label>
+            <input
+              type="number"
+              name="documentation_charge"
+              value={formData.documentation_charge}
+              onChange={handleChange}
+              className="w-full mt-1 border rounded-lg px-3 py-2"
+              required
+            />
+          </div>
+        </div>
+
+        <div className="mt-8 flex gap-4">
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-orange-500 text-white px-5 py-2 rounded-lg disabled:opacity-50"
+          >
+            {loading ? "Saving..." : "Save Changes"}
+          </button>
+          <button
+            type="button"
+            onClick={onCancel}
+            className="bg-gray-300 px-5 py-2 rounded-lg"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+
+      {showIntakeForm && (
+        <AddIntakeForm
+          onSave={handleAddIntake}
+          onCancel={() => setShowIntakeForm(false)}
+        />
+      )}
     </div>
   );
 }

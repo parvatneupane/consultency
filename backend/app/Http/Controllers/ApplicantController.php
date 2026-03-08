@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Applicant;
 use App\Models\CustomerModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 use Illuminate\Support\Facades\Log;
 
 class ApplicantController extends Controller
@@ -12,8 +14,9 @@ class ApplicantController extends Controller
     //
      public function index()
     {
-        $data = CustomerModel::where('status', 1)->with('applicants')->get();
-        Log::info($data);
+        $data = CustomerModel::where('status', 1)->with( 'applicants.documents', 
+        'applicants.coe','user')->get();
+       
         return response()->json([
             'message' => 'Applicants fetched successfully',
             'data'    => $data]);
@@ -22,11 +25,12 @@ class ApplicantController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'cus_id'        => 'required|exists:customer,id',
-            'applied_city'    => 'required|string|max:255',
-            'applied_colllege' => 'required|string|max:255',
-            'coe_charge'    => 'required|integer',
-            'documentation_charge' => 'required|integer',
+            'cus_id'        => 'nullable|',
+            'applied_city'    => 'nullable|string|max:255',
+            'applied_college' => 'nullable|string|max:255',
+             'intake'               => 'nullable|string|max:255',
+            'coe_charge'    => 'nullable|integer',
+            'documentation_charge' => 'nullable|integer',
             'coe_status'    => 'nullable|integer',
             'status'        => 'nullable|integer',
         ]);
@@ -40,27 +44,26 @@ class ApplicantController extends Controller
     }
 
 
-    public function update(Request $request, $id)
-    {
-        $applicant = Applicant::findOrFail($id);
+public function update(Request $request, $id)
+{
+    
+    $applicant = Applicant::findOrFail($id);
 
-        $validated = $request->validate([
-             'cus_id'        => 'required|exists:customer,id',
-            'applied_city'    => 'required|string|max:255',
-            'applied_colllege' => 'required|string|max:255',
-            'coe_charge'    => 'required|integer',
-            'documentation_charge' => 'required|integer',
-            'coe_status'    => 'nullable|integer',
-            'status'        => 'nullable|integer',
-        ]);
+    $validated = $request->validate([
+        'applied_city'         => 'nullable|string|max:255',
+        'applied_college'      => 'nullable|string|max:255',
+        'intake'               => 'nullable|string|max:255',
+        'coe_charge'           => 'nullable|integer',
+        'documentation_charge' => 'nullable|integer',
+    ]);
 
-        $applicant->update($validated);
+    $applicant->update($validated);
 
-        return response()->json([
-            'message' => 'Applicant updated successfully',
-            'data'    => $applicant
-        ]);
-    }
+    return response()->json([
+        'message' => 'Applicant updated successfully',
+        'data'    => $applicant
+    ]);
+}
 
     public function destroy($id)
     {
@@ -74,4 +77,8 @@ class ApplicantController extends Controller
             'message' => 'Applicant deleted successfully'
         ]);
     }
+
+
+
+    
 }

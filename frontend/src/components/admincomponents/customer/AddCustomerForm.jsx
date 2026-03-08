@@ -8,7 +8,7 @@ export default function AddCustomerForm() {
 const [isReferred, setIsReferred] = useState("no");
 const [referralType, setReferralType] = useState("");
 const [loading, setLoading] = useState(false);
-const token = localStorage.getItem("auth_token");
+
 
 
 
@@ -43,7 +43,7 @@ const handleaddcustomer = async (e) => {
   };
 
   try {
-const response = await api.post(
+  await api.post(
   "api/customers",
   customerData, 
   {
@@ -366,17 +366,7 @@ const response = await api.post(
             />
           </div>
 
-          {/* Follow Up */}
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Follow Up
-            </label>
-            <textarea
-              name="followup"
-              rows="3"            
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            ></textarea>
-          </div>
+ 
 
           {/* Buttons */}
           <div className="md:col-span-2 flex justify-end gap-4 mt-4">

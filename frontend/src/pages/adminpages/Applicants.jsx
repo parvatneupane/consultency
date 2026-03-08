@@ -1,17 +1,24 @@
 import AdminLayout from "../AdminLayout";
-import ApplicantTable from "../../components/admincomponents/applicant/ApplicantTable";
-import { useEffect, useMemo, useState } from "react";
+import ApplicantsTable from "../../components/admincomponents/applicant/ApplicantTable";
+import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import api from "../../api";
+import "react-toastify/dist/ReactToastify.css";
+
 export default function Applicants() {
-      const token = localStorage.getItem("auth_token");
-          const [AllApplicant, setAllApplicant] = useState([]);
-          const [loading, setLoading] = useState(false);
+  const token = localStorage.getItem("auth_token");
+  const [allApplicants, setAllApplicants] = useState([]);
+  const [filteredApplicants, setFilteredApplicants] = useState([]);
+  const [loading, setLoading] = useState(false);
 
+  // Filters
+  const [search, setSearch] = useState("");
+  const [branchFilter, setBranchFilter] = useState("");
+  const [intakeFilter, setIntakeFilter] = useState("");
+  const [coeFilter, setCoeFilter] = useState("");
 
-
-    const fetchApplicants = async () => {
-
+  // Fetch applicants
+  const fetchApplicants = async () => {
     setLoading(true);
     try {
       const response = await api.get("api/applicant", {
@@ -19,21 +26,126 @@ export default function Applicants() {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      setAllApplicant(response.data.data || response.data);
+      const applicants = response.data.data || [];
+      setAllApplicants(applicants);
+      setFilteredApplicants(applicants); // Initially show all
     } catch (error) {
-      console.error("Error fetching customers:", error);
+      console.error("Error fetching applicants:", error);
+      toast.error("Error fetching applicants");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
     fetchApplicants();
   }, []);
-    return (
-        <AdminLayout>
-            <h2 className="text-2xl font-bold mb-2">Applicants Page</h2>
-        <ApplicantTable applicants ={AllApplicant} />
-        </AdminLayout>
-    );
+
+  // Filter applicants whenever any filter changes
+  useEffect(() => {
+    const filtered = allApplicants.filter((applicant) => {
+      const applicantData = Array.isArray(applicant.applicants)
+        ? applicant.applicants[0]
+        : applicant.applicants || {};
+
+      const branch = applicant.user?.name || "";
+      const intake = applicantData.intake || "";
+      const coeStatus = applicantData.coe?.status || "";
+
+      const matchesSearch =
+        applicant.name?.toLowerCase().includes(search.toLowerCase()) ||
+        applicant.phone?.includes(search);
+
+      const matchesBranch = branchFilter ? branch === branchFilter : true;
+      const matchesIntake = intakeFilter ? intake === intakeFilter : true;
+      const matchesCoe = coeFilter ? coeStatus === coeFilter : true;
+
+      return matchesSearch && matchesBranch && matchesIntake && matchesCoe;
+    });
+
+    setFilteredApplicants(filtered);
+  }, [search, branchFilter, intakeFilter, coeFilter, allApplicants]);
+
+  // Compute unique options for filters
+  const branchOptions = [...new Set(allApplicants.map((a) => a.user?.name).filter(Boolean))];
+  const intakeOptions = [
+    ...new Set(
+      allApplicants
+        .map((a) => (Array.isArray(a.applicants) ? a.applicants[0] : a.applicants)?.intake)
+        .filter(Boolean)
+    ),
+  ];
+  const coeOptions = [
+    ...new Set(
+      allApplicants
+        .map((a) => (Array.isArray(a.applicants) ? a.applicants[0] : a.applicants)?.coe?.status)
+        .filter(Boolean)
+    ),
+  ];
+
+  return (
+    <AdminLayout>
+      <ToastContainer />
+      <div className="flex flex-col gap-4">
+        <h2 className="text-2xl font-bold mb-4">Applicants Page</h2>
+
+        {/* Filters */}
+        <div className="flex flex-wrap gap-4 mb-4">
+          <input
+            type="text"
+            placeholder="Search by name or phone"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border px-3 py-2 rounded-lg w-64"
+          />
+
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            className="border px-3 py-2 rounded-lg"
+          >
+            <option value="">All Branches</option>
+            {branchOptions.map((b) => (
+              <option key={b} value={b}>
+                {b}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={intakeFilter}
+            onChange={(e) => setIntakeFilter(e.target.value)}
+            className="border px-3 py-2 rounded-lg"
+          >
+            <option value="">All Intakes</option>
+            {intakeOptions.map((i) => (
+              <option key={i} value={i}>
+                {i}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={coeFilter}
+            onChange={(e) => setCoeFilter(e.target.value)}
+            className="border px-3 py-2 rounded-lg"
+          >
+            <option value="">All COE Status</option>
+            {coeOptions.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Table */}
+        {loading ? (
+          <div className="p-6 text-gray-500">Loading applicants...</div>
+        ) : (
+          <ApplicantsTable applicants={filteredApplicants} />
+        )}
+      </div>
+    </AdminLayout>
+  );
 }

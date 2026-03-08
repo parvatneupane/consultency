@@ -40,4 +40,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(EmployeeModel::class);
     }
+
+    public function customer()
+    {
+        return $this->hasOne(CustomerModel::class);
+    }
 }

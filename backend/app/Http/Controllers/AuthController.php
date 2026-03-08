@@ -14,7 +14,6 @@ class AuthController extends Controller
     //
     public function registration(Request $request)
     {
-        Log::info($request->all());
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
@@ -43,7 +42,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-         Log::info($request->all());
+        
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',

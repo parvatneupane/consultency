@@ -11,7 +11,8 @@ class Applicant extends Model
     protected $fillable = [
     'cus_id',
     'applied_city',
-    'applied_colllege',
+    'applied_college',
+    'intake',
     'coe_charge',
     'documentation_charge',
     'coe_status',
@@ -21,5 +22,13 @@ class Applicant extends Model
     public function customer()
     {
         return $this->belongsTo(CustomerModel::class);
+    }
+    public function documents()
+    {
+        return $this->hasMany(ApplicantDocument::class);
+    }
+    public function coe()
+    {
+        return $this->hasOne(ApplicantCOE::class);
     }
 }

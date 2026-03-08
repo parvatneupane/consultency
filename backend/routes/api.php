@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\ApplicantController;
+use App\Http\Controllers\ApplicantDocumentController;
+use App\Http\Controllers\ApplicantCOEController;
+use App\Http\Controllers\IntakeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CustomerController;
@@ -46,6 +49,22 @@ Route::prefix('applicant')->middleware(['auth:sanctum', 'admin'])->group(functio
 Route::post('/', [ApplicantController::class, 'store']);
 Route::put('/{id}', [ApplicantController::class, 'update']);
 Route::delete('/{id}', [ApplicantController::class, 'destroy']);
+});
+Route::prefix('intakes')->middleware(['auth:sanctum', 'admin'])->group(function () {
+Route::get('/', [IntakeController::class, 'index']);
+Route::post('/', [IntakeController::class, 'store']);
+Route::get('/{id}', [IntakeController::class, 'show']);
+Route::delete('/{id}', [IntakeController::class, 'destroy']);
+});
+Route::prefix('document')->middleware(['auth:sanctum', 'admin'])->group(function () {
+ Route::get('/applicant/{id}', [ApplicantDocumentController::class, 'byApplicant']);
+    Route::post('/', [ApplicantDocumentController::class, 'store']);
+    Route::delete('/{id}', [ApplicantDocumentController::class, 'destroy']);
+
+});
+Route::prefix('coe')->middleware(['auth:sanctum', 'admin'])->group(function () {
+Route::post('/store', [ApplicantCOEController::class, 'store']);
+Route::get('/{applicant_id}', [ApplicantCOEController::class, 'show']);
 });
 Route::prefix('salary')->middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('/', [SalaryController::class, 'store']);

@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 
 export default function AdminLayout({ children }) {
+const data = JSON.parse(localStorage.getItem("user"));
+
   const [profileOpen, setProfileOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -85,12 +87,12 @@ export default function AdminLayout({ children }) {
           >
 
             <div className="text-right hidden sm:block">
-              <p className="text-sm font-semibold text-gray-800">Admin User</p>
-              <p className="text-xs text-gray-500">admin@example.com</p>
+              <p className="text-sm font-semibold text-gray-800">{data.name}</p>
+              <p className="text-xs text-gray-500">{data.email}</p>
             </div>
 
               <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-full flex items-center justify-center font-bold shadow-md">
-              A
+{data.name.slice(0, 1)}
             </div>
           </button>
 

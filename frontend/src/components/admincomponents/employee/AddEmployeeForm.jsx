@@ -69,7 +69,7 @@ export default function AddEmployeeForm() {
     });
 
     try {
-      const response = await api.post("api/employees", payload, {
+        await api.post("api/employees", payload, {
         headers: {
           "Content-Type": "multipart/form-data", // important for file uploads
           Authorization: `Bearer ${token}`,

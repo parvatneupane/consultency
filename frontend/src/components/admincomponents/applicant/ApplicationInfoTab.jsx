@@ -4,7 +4,7 @@ import ApplicationInfoForm from "./ApplicationInfoForm";
 export default function ApplicationInfoTab({ applicant }) {
   const [editMode, setEditMode] = useState(false);
 
-  // 🔥 If in edit mode → show form
+  // If edit mode → show form
   if (editMode) {
     return (
       <ApplicationInfoForm
@@ -12,15 +12,13 @@ export default function ApplicationInfoTab({ applicant }) {
         onCancel={() => setEditMode(false)}
         onSubmit={(data) => {
           console.log("Updated Data:", data);
-
-          // 🔥 Later you connect PUT API here
           setEditMode(false);
         }}
       />
     );
   }
 
-  // 🔥 Otherwise show normal view
+  // Normal view
   return (
     <div className="bg-white p-6 rounded-xl shadow border">
       <h2 className="text-xl font-semibold mb-6">
@@ -28,53 +26,54 @@ export default function ApplicationInfoTab({ applicant }) {
       </h2>
 
       <div className="grid md:grid-cols-2 gap-6">
-        <Info label="Applied City" value={applicant?.applied_city ?? "null"} />
-        <Info label="Applied College" value={applicant?.applied_colllege ?? "null"} />
-        <Info label="Intake" value={applicant?.intake ?? "null"} />
-        <Info label="COE Charge" value={applicant?.coe_charge != null ? `Rs. ${applicant.coe_charge}` : "null"} />
-        <Info
-          label="Documentation Charge"
-          value={applicant?.documentation_charge != null ? `Rs. ${applicant.documentation_charge}` : "null"}
-        />
-        <Info label="COE Status" value={statusLabel(applicant?.coe_status)} />
-        <Info label="Application Status" value={applicant?.status ?? "null"} />
+
+        <div>
+          <p className="text-sm text-gray-500">Applied City</p>
+          <p className="font-medium">
+            {applicant.applicants?.applied_city || "null"}
+          </p>
+        </div>
+
+        <div>
+          <p className="text-sm text-gray-500">Applied College</p>
+          <p className="font-medium">
+            {applicant.applicants?.applied_college || "null"}
+          </p>
+        </div>
+
+        <div>
+          <p className="text-sm text-gray-500">Intake</p>
+          <p className="font-medium">
+            {applicant.applicants?.intake || "null"}
+          </p>
+        </div>
+
+        <div>
+          <p className="text-sm text-gray-500">COE Charge</p>
+          <p className="font-medium">
+            {applicant.applicants?.coe_charge ? `Rs. ${applicant.applicants.coe_charge}` : "null"}
+          </p>
+        </div>
+
+        <div>
+          <p className="text-sm text-gray-500">Documentation Charge</p>
+          <p className="font-medium">
+            {applicant.applicants?.documentation_charge
+              ? `Rs. ${applicant.applicants.documentation_charge}`
+              : "null"}
+          </p>
+        </div>
+
       </div>
 
-      <div className="mt-6 flex gap-4">
+      <div className="mt-6">
         <button
           onClick={() => setEditMode(true)}
           className="bg-orange-500 text-white px-4 py-2 rounded"
         >
-          Add Changes
+          Edit
         </button>
       </div>
     </div>
   );
-}
-
-/* 🔹 Reusable Info Component */
-function Info({ label, value }) {
-  return (
-    <div>
-      <p className="text-sm text-gray-500">{label}</p>
-      <p className="font-medium">{value}</p>
-    </div>
-  );
-}
-
-/* 🔹 Helper function for COE Status */
-function statusLabel(coe_status) {
-  switch (coe_status) {
-    case 0:
-      return "Pending";
-    case 1:
-      return "Approved";
-    case 2:
-      return "Rejected";
-    case null:
-    case undefined:
-      return "null";
-    default:
-      return coe_status;
-  }
 }

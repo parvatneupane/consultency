@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 export default function CustomerCard({ customer ,refresh }) {
   const navigate = useNavigate();
 
-  const data = customer || demoCustomer;
+  const data = customer ;
 
   // 🔹 Convert customer → applicant
   const handleConvert = async (e) => {

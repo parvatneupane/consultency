@@ -1,42 +1,19 @@
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate , useLocation } from "react-router-dom";
 
 import PersonalInfoTab from "./PersonalInfoTab";
 import ApplicationInfoTab from "./ApplicationInfoTab";
 import DocumentsTab from "./DocumentsTab";
 import COEStatusTab from "./COEStatusTab";
 
-export default function ApplicantView() {
+export default function ApplicantView( ) {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("personal");
 
-  const applicant = {
-    id: 1,
-    name: "Ram Sharma",
-    phone: "9800000000",
-    address: "Pokhara",
-    email: "ram@gmail.com",
-    city: "Kathmandu",
-    subject: "BSc CSIT",
+   const location = useLocation();
+  const applicant = location.state; 
 
-    applied_city: "Sydney",
-    applied_colllege: "ABC College",
-    coe_charge: 25000,
-    documentation_charge: 5000,
-    intake: "2025 March",
-    status: "Pending",
-    coe_status: 0,
-
-    documents: [
-      { id: 1, document_title: "Passport", status: 1 },
-      { id: 2, document_title: "Transcript", status: 0 },
-    ],
-
-    coe_file: "coe.pdf",
-    coe_remarks: "Waiting for confirmation",
-    coe_final_status: 0,
-  };
 
   return (
     <div className="p-6 max-w-6xl mx-auto">

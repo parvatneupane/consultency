@@ -6,16 +6,26 @@ use App\Http\Controllers\ApplicantCOEController;
 use App\Http\Controllers\IntakeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FollowUpModelController;
 use App\Http\Controllers\SalaryController;
 
+
+
+
+
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'registration']);
+Route::post('/logout', [AuthController::class, 'logout']);
 
+
+Route::prefix('dashboard')->middleware(['auth:sanctum', 'adminorbranch'])->group(function () {
+Route::get('/', [DashboardController::class, 'index']);
+});
 // customer Api
-Route::prefix('customers')->middleware(['auth:sanctum', 'admin'])->group(function () {
+Route::prefix('customers')->middleware(['auth:sanctum', 'adminorbranch'])->group(function () {
     Route::get('/', [CustomerController::class, 'index']);   
     Route::post('/', [CustomerController::class, 'store']); 
     Route::get('/{id}', [CustomerController::class, 'show']); 
@@ -26,7 +36,7 @@ Route::prefix('customers')->middleware(['auth:sanctum', 'admin'])->group(functio
 });
 
 // employee Api
-Route::prefix('employees')->middleware(['auth:sanctum', 'admin'])->group(function () {
+Route::prefix('employees')->middleware(['auth:sanctum', 'adminorbranch'])->group(function () {
     Route::get('/', [EmployeeController::class, 'index']);   
     Route::post('/', [EmployeeController::class, 'store']); 
      Route::get('/edit/{id}', [EmployeeController::class, 'show']); 
@@ -37,40 +47,39 @@ Route::prefix('employees')->middleware(['auth:sanctum', 'admin'])->group(functio
 });
 
 
-Route::prefix('followup')->middleware(['auth:sanctum', 'admin'])->group(function () {
+Route::prefix('followup')->middleware(['auth:sanctum', 'adminorbranch'])->group(function () {
  Route::get('/', [FollowUpModelController::class, 'index']);
 Route::post('/', [FollowUpModelController::class, 'store']);
 Route::put('/{id}', [FollowUpModelController::class, 'update']);
 Route::delete('/{id}', [FollowUpModelController::class, 'destroy']);
 });
 
-Route::prefix('applicant')->middleware(['auth:sanctum', 'admin'])->group(function () {
+Route::prefix('applicant')->middleware(['auth:sanctum', 'adminorbranch'])->group(function () {
  Route::get('/', [ApplicantController::class, 'index']);
 Route::post('/', [ApplicantController::class, 'store']);
 Route::put('/{id}', [ApplicantController::class, 'update']);
 Route::delete('/{id}', [ApplicantController::class, 'destroy']);
 });
-Route::prefix('intakes')->middleware(['auth:sanctum', 'admin'])->group(function () {
+Route::prefix('intakes')->middleware(['auth:sanctum', 'adminorbranch'])->group(function () {
 Route::get('/', [IntakeController::class, 'index']);
 Route::post('/', [IntakeController::class, 'store']);
 Route::get('/{id}', [IntakeController::class, 'show']);
 Route::delete('/{id}', [IntakeController::class, 'destroy']);
 });
-Route::prefix('document')->middleware(['auth:sanctum', 'admin'])->group(function () {
+Route::prefix('document')->middleware(['auth:sanctum', 'adminorbranch'])->group(function () {
  Route::get('/applicant/{id}', [ApplicantDocumentController::class, 'byApplicant']);
     Route::post('/', [ApplicantDocumentController::class, 'store']);
     Route::delete('/{id}', [ApplicantDocumentController::class, 'destroy']);
 
 });
-Route::prefix('coe')->middleware(['auth:sanctum', 'admin'])->group(function () {
+Route::prefix('coe')->middleware(['auth:sanctum', 'adminorbranch'])->group(function () {
 Route::post('/store', [ApplicantCOEController::class, 'store']);
 Route::get('/{applicant_id}', [ApplicantCOEController::class, 'show']);
 });
-Route::prefix('salary')->middleware(['auth:sanctum', 'admin'])->group(function () {
+Route::prefix('salary')->middleware(['auth:sanctum', 'adminorbranch'])->group(function () {
     Route::post('/', [SalaryController::class, 'store']);
     Route::get('/{emp_id}', [SalaryController::class, 'history']); 
 });
-
 
 
 

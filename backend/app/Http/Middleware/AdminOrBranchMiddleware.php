@@ -5,33 +5,36 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminMiddleware
+class AdminOrBranchMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        Log::info($request->all());
-
+        // Check login
         if (!Auth::check()) {
             return response()->json([
                 'message' => 'Unauthorized. Please login first.'
             ], 401);
         }
 
-        if (!isset(Auth::user()->role)) {
+        $user = Auth::user();
+
+        // Check role exists
+        if (!isset($user->role)) {
             return response()->json([
                 'message' => 'User role not defined.'
             ], 403);
         }
 
-        if (Auth::user()->role !== 'admin') {
+        // Allow access only if role is 'admin' or 'branch'
+        if (!in_array($user->role, ['admin', 'branch'])) {
             return response()->json([
-                'message' => 'Forbidden. Admin access only.'
+                'message' => 'Forbidden. Admin or Branch access only.'
             ], 403);
         }
 
+        // Proceed if role is allowed
         return $next($request);
     }
 }

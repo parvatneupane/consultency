@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CustomerModel;
 use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -11,12 +12,27 @@ class CustomerController extends Controller
 {
 public function index(){
     $id = Auth::user()->id;
-    $data = CustomerModel::with('followup')->where('status', 0)->where('user_id',$id)->get();
+
+    $role = User::find($id)->role;
+    // Log::info($role);
+    if ($role == "admin"){
+    $data = CustomerModel::with('followup')->where('status', 0)->get();
      return response()->json([
             'message' => 'Customer fetched successfully',
             'data' => $data
+                 ], 201);
+             }
+             elseif ($role == "branch"){
+             $data = CustomerModel::with('followup')->where('status', 0)->where('user_id',$id)->get();
+                 return response()->json([
+                     'message' => 'Customer fetched successfully',
+                     'data' => $data
+                     ], 201);
+            }else{
+            return response()->json([
+            'message' => 'Customer fetched successfully',
         ], 201);
-}
+}}
 
     //
     public function store(Request $request)
@@ -44,8 +60,8 @@ public function index(){
         ]);
         Log(Auth::user()->id);
 
-$validated['user_id'] = Auth::user()->id;
-        Log::info($validated);
+            $validated['user_id'] = Auth::user()->id;
+        
 
         $customer = CustomerModel::create($validated);
 

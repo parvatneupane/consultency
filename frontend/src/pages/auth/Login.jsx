@@ -85,7 +85,7 @@ if(res.status === 200 && res.data.token){
               <input type="checkbox" className="rounded border-gray-300" />
               Remember me
             </label>
-            <Link to="#" className="text-blue-600 hover:underline">
+            <Link to="/forgot-password" className="text-blue-600 hover:underline">
               Forgot password?
             </Link>
           </div>

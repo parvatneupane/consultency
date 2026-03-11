@@ -16,14 +16,14 @@ public function index(){
     $role = User::find($id)->role;
     // Log::info($role);
     if ($role == "admin"){
-    $data = CustomerModel::with('followup')->where('status', 0)->get();
+    $data = CustomerModel::with('followup','user')->where('status', 0)->get();
      return response()->json([
             'message' => 'Customer fetched successfully',
             'data' => $data
                  ], 201);
              }
              elseif ($role == "branch"){
-             $data = CustomerModel::with('followup')->where('status', 0)->where('user_id',$id)->get();
+             $data = CustomerModel::with('followup','user')->where('status', 0)->where('user_id',$id)->get();
                  return response()->json([
                      'message' => 'Customer fetched successfully',
                      'data' => $data

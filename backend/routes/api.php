@@ -19,7 +19,9 @@ use App\Http\Controllers\SalaryController;
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'registration']);
 Route::post('/logout', [AuthController::class, 'logout']);
-
+Route::post('/send-otp', [AuthController::class, 'sendOtp']);
+Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);    
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
 Route::prefix('dashboard')->middleware(['auth:sanctum', 'adminorbranch'])->group(function () {
 Route::get('/', [DashboardController::class, 'index']);

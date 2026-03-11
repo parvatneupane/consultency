@@ -20,28 +20,43 @@ public function index()
         $role = $user->role;
         $id = $user->id;
 
-        if ($role === 'admin') {
-            $data = CustomerModel::where('status', 1)
-                ->with('applicants.documents', 'applicants.coe', 'user')
-                ->get();
-        } elseif ($role === 'branch') {
-            $data = CustomerModel::where('status', 1)
-                ->where('user_id', $id)
-                ->with('applicants.documents', 'applicants.coe', 'user')
-                ->get();
-        } else {
-            $data = collect();
+        // Base query: only active customers
+        $query = CustomerModel::where('status', 1)->with([
+            'applicants.documents',
+            'applicants.coe',
+            'user'
+        ]);
+
+        // Filter by branch if role is branch
+        if ($role === 'branch') {
+            $query->where('user_id', $id);
+        } elseif ($role !== 'admin') {
+            // Non-admin, non-branch users see nothing
+            return response()->json([
+                'message' => 'No access',
+                'data' => collect()
+            ], 403);
         }
-Log::info($data);
+
+        $data = $query->get();
+
+        // Ensure every customer has an applicants object (null -> empty object)
+        $data->transform(function ($customer) {
+            $customer->applicants = $customer->applicants ?? new \stdClass();
+            return $customer;
+        });
+
+        Log::info($data);
+
         return response()->json([
             'message' => 'Applicants fetched successfully',
-            'data'    => $data
+            'data' => $data
         ], 200);
 
     } catch (\Exception $e) {
         return response()->json([
             'message' => 'Server Error',
-            'error'   => $e->getMessage()
+            'error' => $e->getMessage()
         ], 500);
     }
 }

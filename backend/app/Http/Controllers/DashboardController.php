@@ -27,7 +27,7 @@ class DashboardController extends Controller
             
             $employees = EmployeeModel::where('user_id', $id)->count();
             
-            $applicants = Applicant::where('cus_id', $id)->count();
+            $applicants = CustomerModel::where('user_id', $id)->where('status', '1')->count();
         } else {
           
             $customers = 0;

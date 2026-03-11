@@ -2,7 +2,7 @@ import AdminLayout from "../AdminLayout";
 import CustomerCard from "../../components/admincomponents/customer/CustomerCard";
 import { Link } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import api from "../../api";
 
 export default function Customer() {
@@ -10,13 +10,15 @@ export default function Customer() {
 
   const [allCustomers, setAllCustomers] = useState([]);
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("all");
+  const [filterStudyTime, setFilterStudyTime] = useState("all");
+  const [filterBranch, setFilterBranch] = useState("all");
+  const [filterCourse, setFilterCourse] = useState("all");
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
   const perPage = 9;
 
-  //  Fetch once from backend
+  // Fetch customers from backend
   const fetchCustomers = async () => {
     setLoading(true);
     try {
@@ -25,7 +27,6 @@ export default function Customer() {
           Authorization: `Bearer ${token}`,
         },
       });
-
       setAllCustomers(response.data.data || response.data);
     } catch (error) {
       console.error("Error fetching customers:", error);
@@ -37,7 +38,24 @@ export default function Customer() {
     fetchCustomers();
   }, []);
 
-  // 🧠 Client-side Search + Filter
+  // Get unique branches by name
+  const uniqueBranches = useMemo(() => {
+    const map = {};
+    allCustomers.forEach((c) => {
+      if (c.user && c.user.name) {
+        map[c.user.name] = c.user.id;
+      }
+    });
+    return map; // { "Branch A": 1, "Branch B": 2 }
+  }, [allCustomers]);
+
+  // Get unique courses
+  const uniqueCourses = useMemo(
+    () => Array.from(new Set(allCustomers.map((c) => c.course))),
+    [allCustomers]
+  );
+
+  // Filtered customers
   const filteredCustomers = useMemo(() => {
     return allCustomers.filter((customer) => {
       const searchText = search.toLowerCase();
@@ -48,16 +66,21 @@ export default function Customer() {
         customer.course?.toLowerCase().includes(searchText) ||
         customer.city?.toLowerCase().includes(searchText);
 
-      const matchesFilter =
-        filter === "all" || customer.study_time === filter;
+      const matchesStudyTime =
+        filterStudyTime === "all" || customer.study_time === filterStudyTime;
 
-      return matchesSearch && matchesFilter;
+      const matchesBranch =
+        filterBranch === "all" || (customer.user && customer.user.name === filterBranch);
+
+      const matchesCourse =
+        filterCourse === "all" || customer.course === filterCourse;
+
+      return matchesSearch && matchesStudyTime && matchesBranch && matchesCourse;
     });
-  }, [search, filter, allCustomers]);
+  }, [search, filterStudyTime, filterBranch, filterCourse, allCustomers]);
 
-  // 📄 Client-side Pagination
+  // Pagination
   const totalPages = Math.ceil(filteredCustomers.length / perPage);
-
   const paginatedCustomers = useMemo(() => {
     const start = (page - 1) * perPage;
     return filteredCustomers.slice(start, start + perPage);
@@ -65,9 +88,9 @@ export default function Customer() {
 
   return (
     <AdminLayout>
-      {/* Top Bar */}
-              <ToastContainer />
+      <ToastContainer />
 
+      {/* Top Bar */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
         {/* Search */}
         <input
@@ -82,42 +105,83 @@ export default function Customer() {
           focus:ring-2 focus:ring-orange-400 focus:outline-none shadow-sm"
         />
 
-        <div className="flex items-center gap-3">
-          {/* Filter */}
-          <select
-            value={filter}
-            onChange={(e) => {
-              setFilter(e.target.value);
-              setPage(1);
-            }}
-            className="px-4 py-2 rounded-xl border border-gray-300
-            focus:ring-2 focus:ring-orange-400 focus:outline-none shadow-sm"
-          >
-            <option value="all">All Study Times</option>
-            <option value="Morning">Morning</option>
-            <option value="Evening">Evening</option>
-          </select>
+        {/* Filters + Add */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+  {/* Left: Filters */}
+  <div className="flex items-center gap-3 flex-wrap">
+    {/* Study Time */}
+    <select
+      value={filterStudyTime}
+      onChange={(e) => {
+        setFilterStudyTime(e.target.value);
+        setPage(1);
+      }}
+      className="px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-orange-400"
+    >
+      <option value="all">All Study Times</option>
+      <option value="Morning">Morning</option>
+      <option value="Evening">Evening</option>
+    </select>
 
-          {/* Add Button */}
-          <Link
-            to="/addcustomer"
-            className="inline-flex items-center justify-center bg-amber-400 text-white font-semibold px-5 py-2 rounded-2xl shadow-md hover:bg-amber-500 hover:shadow-lg transition-all duration-300"
-          >
-            + Add Customer
-          </Link>
-        </div>
+    {/* Branch */}
+    <select
+      value={filterBranch}
+      onChange={(e) => {
+        setFilterBranch(e.target.value);
+        setPage(1);
+      }}
+      className="px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-orange-400"
+    >
+      <option value="all">All Branches</option>
+      {Object.keys(uniqueBranches).map((name) => (
+        <option key={uniqueBranches[name]} value={name}>
+          {name}
+        </option>
+      ))}
+    </select>
+
+    {/* Course */}
+    <select
+      value={filterCourse}
+      onChange={(e) => {
+        setFilterCourse(e.target.value);
+        setPage(1);
+      }}
+      className="px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-orange-400"
+    >
+      <option value="all">All Courses</option>
+      {uniqueCourses.map((course) => (
+        <option key={course} value={course}>
+          {course}
+        </option>
+      ))}
+    </select>
+  </div>
+
+  {/* Right: Add Button */}
+  <div className="mt-2 w-32 md:mt-0 self-end md:self-auto">
+    <Link
+      to="/addcustomer"
+      className="inline-flex items-center justify-center bg-amber-400 text-white font-semibold px-5 py-2 rounded-2xl shadow-md hover:bg-amber-500 hover:shadow-lg transition-all duration-300"
+    >
+      + Add Customer
+    </Link>
+  </div>
+</div>
       </div>
 
-      {/* Results */}
+      {/* Customer Cards */}
       {loading ? (
-        <p className="text-center text-gray-500 mt-10">
-          Loading customers...
-        </p>
+        <p className="text-center text-gray-500 mt-10">Loading customers...</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {paginatedCustomers.length > 0 ? (
             paginatedCustomers.map((customer) => (
-              <CustomerCard key={customer.id} customer={customer} refresh={fetchCustomers} />
+              <CustomerCard
+                key={customer.id}
+                customer={customer}
+                refresh={fetchCustomers}
+              />
             ))
           ) : (
             <p className="text-gray-500 col-span-full text-center">
@@ -130,22 +194,20 @@ export default function Customer() {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex justify-center gap-2 mt-8 flex-wrap">
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-            (p) => (
-              <button
-                key={p}
-                onClick={() => setPage(p)}
-                className={`px-4 py-2 rounded-xl border transition
-                ${
-                  page === p
-                    ? "bg-orange-500 text-white border-orange-500"
-                    : "hover:bg-gray-100"
-                }`}
-              >
-                {p}
-              </button>
-            )
-          )}
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <button
+              key={p}
+              onClick={() => setPage(p)}
+              className={`px-4 py-2 rounded-xl border transition
+              ${
+                page === p
+                  ? "bg-orange-500 text-white border-orange-500"
+                  : "hover:bg-gray-100"
+              }`}
+            >
+              {p}
+            </button>
+          ))}
         </div>
       )}
     </AdminLayout>

@@ -16,19 +16,18 @@ export default function Applicants() {
   const [branchFilter, setBranchFilter] = useState("");
   const [intakeFilter, setIntakeFilter] = useState("");
   const [coeFilter, setCoeFilter] = useState("");
+  const [courseFilter, setCourseFilter] = useState("");
 
   // Fetch applicants
   const fetchApplicants = async () => {
     setLoading(true);
     try {
       const response = await api.get("api/applicant", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       const applicants = response.data.data || [];
       setAllApplicants(applicants);
-      setFilteredApplicants(applicants); // Initially show all
+      setFilteredApplicants(applicants);
     } catch (error) {
       console.error("Error fetching applicants:", error);
       toast.error("Error fetching applicants");
@@ -41,16 +40,15 @@ export default function Applicants() {
     fetchApplicants();
   }, []);
 
-  // Filter applicants whenever any filter changes
+  // Filter applicants whenever filters change
   useEffect(() => {
     const filtered = allApplicants.filter((applicant) => {
-      const applicantData = Array.isArray(applicant.applicants)
-        ? applicant.applicants[0]
-        : applicant.applicants || {};
+      const applicantData = applicant.applicants || {};
 
       const branch = applicant.user?.name || "";
       const intake = applicantData.intake || "";
-      const coeStatus = applicantData.coe?.status || "";
+      const coeStatus = applicantData.coe?.status ?? "";
+      const course = applicant.course || "";
 
       const matchesSearch =
         applicant.name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -59,29 +57,19 @@ export default function Applicants() {
       const matchesBranch = branchFilter ? branch === branchFilter : true;
       const matchesIntake = intakeFilter ? intake === intakeFilter : true;
       const matchesCoe = coeFilter ? coeStatus === coeFilter : true;
+      const matchesCourse = courseFilter ? course === courseFilter : true;
 
-      return matchesSearch && matchesBranch && matchesIntake && matchesCoe;
+      return matchesSearch && matchesBranch && matchesIntake && matchesCoe && matchesCourse;
     });
 
     setFilteredApplicants(filtered);
-  }, [search, branchFilter, intakeFilter, coeFilter, allApplicants]);
+  }, [search, branchFilter, intakeFilter, coeFilter, courseFilter, allApplicants]);
 
   // Compute unique options for filters
   const branchOptions = [...new Set(allApplicants.map((a) => a.user?.name).filter(Boolean))];
-  const intakeOptions = [
-    ...new Set(
-      allApplicants
-        .map((a) => (Array.isArray(a.applicants) ? a.applicants[0] : a.applicants)?.intake)
-        .filter(Boolean)
-    ),
-  ];
-  const coeOptions = [
-    ...new Set(
-      allApplicants
-        .map((a) => (Array.isArray(a.applicants) ? a.applicants[0] : a.applicants)?.coe?.status)
-        .filter(Boolean)
-    ),
-  ];
+  const intakeOptions = [...new Set(allApplicants.map((a) => a.applicants?.intake).filter(Boolean))];
+  const coeOptions = [...new Set(allApplicants.map((a) => a.applicants?.coe?.status).filter(Boolean))];
+  const courseOptions = [...new Set(allApplicants.map((a) => a.course).filter(Boolean))];
 
   return (
     <AdminLayout>
@@ -106,9 +94,7 @@ export default function Applicants() {
           >
             <option value="">All Branches</option>
             {branchOptions.map((b) => (
-              <option key={b} value={b}>
-                {b}
-              </option>
+              <option key={b} value={b}>{b}</option>
             ))}
           </select>
 
@@ -119,9 +105,7 @@ export default function Applicants() {
           >
             <option value="">All Intakes</option>
             {intakeOptions.map((i) => (
-              <option key={i} value={i}>
-                {i}
-              </option>
+              <option key={i} value={i}>{i}</option>
             ))}
           </select>
 
@@ -132,9 +116,18 @@ export default function Applicants() {
           >
             <option value="">All COE Status</option>
             {coeOptions.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
+
+          <select
+            value={courseFilter}
+            onChange={(e) => setCourseFilter(e.target.value)}
+            className="border px-3 py-2 rounded-lg"
+          >
+            <option value="">All Courses</option>
+            {courseOptions.map((c) => (
+              <option key={c} value={c}>{c}</option>
             ))}
           </select>
         </div>

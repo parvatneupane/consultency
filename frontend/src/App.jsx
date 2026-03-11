@@ -16,6 +16,9 @@ import ApplicantView from "./components/admincomponents/applicant/ApplicantView"
 
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import VerifyOtp from "./pages/auth/VerifyOtp";
+import ResetPassword from "./pages/auth/ResetPassword";
 
 import UpdateCustomerForm from "./components/admincomponents/customer/UpdateCustomerForm";
 import UpdateEmployeeForm from "./components/admincomponents/employee/UpdateEmployeeForm";
@@ -26,11 +29,15 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-
         {/* Public Routes */}
         <Route path="/" element={<Welcome />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
+        {/* OTP & Forgot Password Flow */}
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/verify-otp" element={<VerifyOtp />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Dashboard */}
         <Route
@@ -143,7 +150,6 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-
       </Routes>
     </BrowserRouter>
   );

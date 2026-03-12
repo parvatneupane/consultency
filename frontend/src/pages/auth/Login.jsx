@@ -19,13 +19,17 @@ export default function Login() {
 
       // console.log(res);
       
-if(res.status === 200 && res.data.token){
+if (res.status === 200 && res.data.token) {
   localStorage.setItem("auth_token", res.data.token);
   localStorage.setItem("user", JSON.stringify(res.data.user));
 
-  navigate("/dashboard");
+  const role = res.data.user?.role;
 
-
+  if (["superadmin", "admin", "branch"].includes(role)) {
+    navigate("/dashboard");
+  } else {
+    navigate("/");
+  }
 }
     } catch (err) {
       toast(err.response?.data?.message || "Login failed");

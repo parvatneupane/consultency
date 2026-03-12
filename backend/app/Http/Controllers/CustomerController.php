@@ -15,10 +15,10 @@ public function index(){
 
     $role = User::find($id)->role;
     // Log::info($role);
-    if ($role == "admin"){
+    if ($role == "superadmin" || $role =="admin"){
     $data = CustomerModel::with('followup','user')->where('status', 0)->get();
      return response()->json([
-            'message' => 'Customer fetched successfully',
+            'message' => 'Customer fetched successffrully',
             'data' => $data
                  ], 201);
              }

@@ -10,13 +10,58 @@ import {
   Globe,
   UserCheck,
   MessageSquare,
-  BadgeCheck
+  BadgeCheck,
+  Trash2
 } from "lucide-react";
 
+import { useNavigate } from "react-router-dom";
+import api from "../../../api";
+
 export default function PersonalInfoTab({ applicant }) {
+
+  const navigate = useNavigate();
+  const token = localStorage.getItem("auth_token");
+
+  const handleDelete = async () => {
+
+    if (!window.confirm("Are you sure you want to delete this customer?")) {
+      return;
+    }
+
+    try {
+
+      await api.delete(`/api/customers/${applicant.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      alert("Customer deleted successfully!");
+      navigate("/applicants");
+
+    } catch (error) {
+
+      console.error("Delete failed:", error);
+      alert("Failed to delete customer.");
+
+    }
+  };
+
   return (
     <div className="bg-white p-6 rounded-xl shadow border">
-      <h2 className="text-xl font-semibold mb-6">Personal Information</h2>
+
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-semibold">Personal Information</h2>
+
+        <button
+          onClick={handleDelete}
+          className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+        >
+          <Trash2 size={16} />
+          Delete
+        </button>
+      </div>
 
       <div className="grid md:grid-cols-2 gap-6">
 
@@ -57,7 +102,6 @@ export default function PersonalInfoTab({ applicant }) {
           </div>
         </div>
       )}
-
 
     </div>
   );

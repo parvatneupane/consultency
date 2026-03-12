@@ -71,15 +71,23 @@ export default function AdminLayout({ children }) {
           </Link>
 
             {/* Only ADMIN can see employee */}
-            {data?.role === "admin" && (
-              <Link to="/employee" className={isActive("/employee") ? activeClass : normalClass}>
-                <Briefcase size={20} /> Employee
-              </Link>
-            )}
+            {( data?.role === "superadmin" || data?.role === "admin") && (
+            <Link
+              to="/employee"
+              className={isActive("/employee") ? activeClass : normalClass}
+            >
+              <Briefcase size={20} /> Employee
+            </Link>
+          )}
 
           <Link to="/applicants" className={isActive("/applicants") ? activeClass : normalClass}>
             <BadgeCheck size={20} /> Applicants
           </Link>
+            {( data?.role === "superadmin") && (
+          <Link to="/users" className={isActive("/users") ? activeClass : normalClass}>
+            <BadgeCheck size={20} /> User Management
+          </Link>
+              )}
         </nav>
 
         <div className="p-5 border-t text-sm text-gray-500 text-center">
@@ -124,13 +132,7 @@ export default function AdminLayout({ children }) {
           {profileOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-xl border border-gray-100 overflow-hidden z-50">
 
-              <Link
-                to="/profile"
-                className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-orange-50 hover:text-orange-600"
-                onClick={() => setProfileOpen(false)}
-              >
-                <Settings size={16} /> Settings
-              </Link>
+             
 
               <button
                 className="flex items-center gap-2 px-4 py-2 w-full text-gray-700 hover:bg-red-50 hover:text-red-600"

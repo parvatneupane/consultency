@@ -26,10 +26,11 @@ class EmployeeController extends Controller
         ], 200);
     }
 
-    public function getBranches()
+public function getBranches()
 {
-  
-    $branches = User::select('id', 'name')->get();
+    $branches = User::select('id', 'name')
+        ->whereIn('role', ['branch', 'admin', 'superadmin'])
+        ->get();
 
     return response()->json([
         'message' => 'Branches fetched successfully',

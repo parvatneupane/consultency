@@ -49,11 +49,13 @@ class ApplicantCOEController extends Controller
                 'joined_school' => 'nullable|string',
                 'subject' => 'nullable|string',
                 'city' => 'nullable|string',
+                'contact'=> 'nullable|string',
             ]);
 
             $data['joined_school'] = $request->joined_school;
             $data['subject'] = $request->subject;
             $data['city'] = $request->city;
+             $data['contact'] = $request->contact;
         }
    
         $coe = ApplicantCOE::create($data);

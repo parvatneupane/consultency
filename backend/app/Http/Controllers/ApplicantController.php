@@ -29,8 +29,8 @@ public function index()
 
         // Filter by branch if role is branch
         if ($role === 'branch') {
-            $query->where('user_id', $id);
-        } elseif ($role !== 'admin') {
+         $query->where('user_id', $id);
+        } elseif ($role !== 'admin' && $role !== 'superadmin') { 
             // Non-admin, non-branch users see nothing
             return response()->json([
                 'message' => 'No access',
@@ -46,7 +46,7 @@ public function index()
             return $customer;
         });
 
-        Log::info($data);
+       
 
         return response()->json([
             'message' => 'Applicants fetched successfully',

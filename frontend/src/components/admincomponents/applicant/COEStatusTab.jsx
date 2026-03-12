@@ -11,7 +11,7 @@ export default function COEStatusTab({ applicant }) {
   const [school, setSchool] = useState("");
   const [subject, setSubject] = useState("");
   const [city, setCity] = useState("");
-
+  const [contact, setContact] = useState("");
   const [coeData, setCoeData] = useState(null);
 
   const token = localStorage.getItem("auth_token");
@@ -37,6 +37,7 @@ export default function COEStatusTab({ applicant }) {
           setSchool(data.joined_school);
           setSubject(data.subject);
           setCity(data.city);
+          setContact(data.contact);
         } else {
           setStep("rejected");
           setReason(data.remarks);
@@ -65,6 +66,7 @@ export default function COEStatusTab({ applicant }) {
           joined_school: school,
           subject: subject,
           city: city,
+          contact: contact,
         },
         {
           headers: {
@@ -144,6 +146,7 @@ export default function COEStatusTab({ applicant }) {
           <p><b>School:</b> {coeData.joined_school}</p>
           <p><b>Subject:</b> {coeData.subject}</p>
           <p><b>City:</b> {coeData.city}</p>
+          <p><b>Contact:</b> {coeData.contact}</p>
         </div>
       )}
 
@@ -172,6 +175,13 @@ export default function COEStatusTab({ applicant }) {
             placeholder="City"
             value={city}
             onChange={(e) => setCity(e.target.value)}
+            className="w-full border p-2"
+          />
+          <input
+            type="text"
+            placeholder="Contact"
+            value={contact}
+            onChange={(e) => setContact(e.target.value)}
             className="w-full border p-2"
           />
 

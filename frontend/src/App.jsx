@@ -22,7 +22,7 @@ import ResetPassword from "./pages/auth/ResetPassword";
 
 import UpdateCustomerForm from "./components/admincomponents/customer/UpdateCustomerForm";
 import UpdateEmployeeForm from "./components/admincomponents/employee/UpdateEmployeeForm";
-
+import UserManagement from "./pages/adminpages/UserManagement";
 import ProtectedRoute from "./components/admincomponents/ProtectedRoute";
 
 export default function App() {
@@ -43,7 +43,7 @@ export default function App() {
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute roles={["admin", "branch"]}>
+            <ProtectedRoute roles={["superadmin","admin", "branch"]}>
               <Dashboard />
             </ProtectedRoute>
           }
@@ -53,7 +53,7 @@ export default function App() {
         <Route
           path="/addcustomer"
           element={
-            <ProtectedRoute roles={["admin", "branch"]}>
+            <ProtectedRoute roles={["superadmin","admin", "branch"]}>
               <AddCustomer />
             </ProtectedRoute>
           }
@@ -62,7 +62,7 @@ export default function App() {
         <Route
           path="/customer"
           element={
-            <ProtectedRoute roles={["admin", "branch"]}>
+            <ProtectedRoute roles={["superadmin","admin", "branch"]}>
               <Customer />
             </ProtectedRoute>
           }
@@ -71,7 +71,7 @@ export default function App() {
         <Route
           path="/customer_edit"
           element={
-            <ProtectedRoute roles={["admin", "branch"]}>
+            <ProtectedRoute roles={["superadmin","admin", "branch"]}>
               <UpdateCustomerForm />
             </ProtectedRoute>
           }
@@ -80,7 +80,7 @@ export default function App() {
         <Route
           path="/customer_view"
           element={
-            <ProtectedRoute roles={["admin", "branch"]}>
+            <ProtectedRoute roles={["superadmin","admin", "branch"]}>
               <CustomerView />
             </ProtectedRoute>
           }
@@ -90,7 +90,7 @@ export default function App() {
         <Route
           path="/employee"
           element={
-            <ProtectedRoute roles={["admin"]}>
+            <ProtectedRoute roles={["superadmin","admin"]}>
               <Employee />
             </ProtectedRoute>
           }
@@ -99,7 +99,7 @@ export default function App() {
         <Route
           path="/addemployee"
           element={
-            <ProtectedRoute roles={["admin"]}>
+            <ProtectedRoute roles={["superadmin","admin"]}>
               <AddEmployee />
             </ProtectedRoute>
           }
@@ -108,7 +108,7 @@ export default function App() {
         <Route
           path="/employee_edit"
           element={
-            <ProtectedRoute roles={["admin"]}>
+            <ProtectedRoute roles={["superadmin","admin"]}>
               <UpdateEmployeeForm />
             </ProtectedRoute>
           }
@@ -117,7 +117,7 @@ export default function App() {
         <Route
           path="/employee_view"
           element={
-            <ProtectedRoute roles={["admin"]}>
+            <ProtectedRoute roles={["superadmin","admin"]}>
               <EmployeeView />
             </ProtectedRoute>
           }
@@ -126,7 +126,7 @@ export default function App() {
         <Route
           path="/salaryhistory"
           element={
-            <ProtectedRoute roles={["admin"]}>
+            <ProtectedRoute roles={["superadmin","admin"]}>
               <SalaryHistoryPage />
             </ProtectedRoute>
           }
@@ -136,8 +136,18 @@ export default function App() {
         <Route
           path="/applicants"
           element={
-            <ProtectedRoute roles={["admin", "branch"]}>
+            <ProtectedRoute roles={["superadmin","admin", "branch"]}>
               <Applicants />
+            </ProtectedRoute>
+          }
+        />
+
+          {/* UserManagement */}
+        <Route
+          path="/users"
+          element={
+            <ProtectedRoute roles={["superadmin"]}>
+              <UserManagement />
             </ProtectedRoute>
           }
         />
@@ -145,7 +155,7 @@ export default function App() {
         <Route
           path="/applicant_view"
           element={
-            <ProtectedRoute roles={["admin", "branch"]}>
+            <ProtectedRoute roles={["superadmin","admin", "branch"]}>
               <ApplicantView />
             </ProtectedRoute>
           }

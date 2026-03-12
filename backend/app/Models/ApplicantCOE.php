@@ -17,6 +17,7 @@ class ApplicantCOE extends Model
         'joined_school',
         'subject',
         'city',
+        'contact',
         'status',
     ];
 

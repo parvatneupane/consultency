@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('joined_school')->nullable();
             $table->string('subject')->nullable();
             $table->string('city')->nullable();
+            $table->string('contact')->nullable();
             $table->string('remarks')->nullable();
             $table->string('status')->default('Pending');
             $table->timestamps();

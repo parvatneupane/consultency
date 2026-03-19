@@ -7,10 +7,9 @@ export default function AddIntakeForm({ onSave, onCancel }) {
 
   const [activeTab, setActiveTab] = useState("list");
   const [intakes, setIntakes] = useState([]);
-  const [intake, setIntake] = useState(""); // YYYY-MM
+  const [intake, setIntake] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Fetch intakes from API
   const fetchIntakes = async () => {
     try {
       const res = await api.get("/api/intakes", {
@@ -26,35 +25,38 @@ export default function AddIntakeForm({ onSave, onCancel }) {
     fetchIntakes();
   }, []);
 
-  // Add new intake
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!intake) return;
 
-    // Convert YYYY-MM to "Month YYYY"
     const [year, monthNum] = intake.split("-");
     const monthName = new Date(`${year}-${monthNum}-01`).toLocaleString(
       "default",
       { month: "long" }
     );
-    const formattedIntake = `${monthName} ${year}`; // e.g., "May 2026"
+    const formattedIntake = `${monthName} ${year}`;
 
     setLoading(true);
     try {
       const res = await api.post(
         "/api/intakes",
         { name: formattedIntake },
-        {  headers: {
+        {
+          headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
-          }, }
+          },
+        }
       );
 
-      setIntake(""); // reset input
-      fetchIntakes();
+      const createdIntake = res.data.data;
 
-      if (onSave) onSave(res.data.data.name);
+      setIntake("");
+      setIntakes((prev) => [...prev, createdIntake]);
+
+      if (onSave) onSave(createdIntake);
+
       setActiveTab("list");
     } catch (err) {
       console.error(err);
@@ -63,7 +65,6 @@ export default function AddIntakeForm({ onSave, onCancel }) {
     }
   };
 
-  // Delete intake
   const deleteIntake = async (id) => {
     if (!window.confirm("Delete this intake?")) return;
 
@@ -71,7 +72,7 @@ export default function AddIntakeForm({ onSave, onCancel }) {
       await api.delete(`/api/intakes/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      fetchIntakes();
+      setIntakes((prev) => prev.filter((item) => item.id !== id));
     } catch (err) {
       console.error(err);
     }
@@ -80,8 +81,6 @@ export default function AddIntakeForm({ onSave, onCancel }) {
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
       <div className="bg-white rounded-xl w-[420px] p-6">
-
-        {/* Tabs */}
         <div className="flex mb-4 border-b">
           <button
             onClick={() => setActiveTab("list")}
@@ -101,7 +100,6 @@ export default function AddIntakeForm({ onSave, onCancel }) {
           </button>
         </div>
 
-        {/* LIST */}
         {activeTab === "list" && (
           <div className="max-h-60 overflow-y-auto space-y-2">
             {intakes.length === 0 && (
@@ -109,9 +107,15 @@ export default function AddIntakeForm({ onSave, onCancel }) {
             )}
 
             {intakes.map((item) => (
-              <div key={item.id} className="flex justify-between items-center border p-2 rounded">
+              <div
+                key={item.id}
+                className="flex justify-between items-center border p-2 rounded"
+              >
                 <span>{item.name}</span>
-                <button onClick={() => deleteIntake(item.id)} className="text-red-500">
+                <button
+                  onClick={() => deleteIntake(item.id)}
+                  className="text-red-500"
+                >
                   <Trash2 size={18} />
                 </button>
               </div>
@@ -119,7 +123,6 @@ export default function AddIntakeForm({ onSave, onCancel }) {
           </div>
         )}
 
-        {/* ADD INTAKE */}
         {activeTab === "add" && (
           <form onSubmit={handleSubmit}>
             <input
@@ -139,7 +142,6 @@ export default function AddIntakeForm({ onSave, onCancel }) {
           </form>
         )}
 
-        {/* Footer */}
         <div className="mt-4 text-right">
           <button onClick={onCancel} className="bg-gray-300 px-4 py-2 rounded">
             Close

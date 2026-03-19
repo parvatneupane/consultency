@@ -29,7 +29,7 @@ export default function Customer() {
       });
       setAllCustomers(response.data.data || response.data);
     } catch (error) {
-      console.error("Error fetching customers:", error);
+      console.error("Error fetching students:", error);
     }
     setLoading(false);
   };
@@ -164,7 +164,7 @@ export default function Customer() {
       to="/addcustomer"
       className="inline-flex items-center justify-center bg-amber-400 text-white font-semibold px-5 py-2 rounded-2xl shadow-md hover:bg-amber-500 hover:shadow-lg transition-all duration-300"
     >
-      + Add Customer
+      + Add Student
     </Link>
   </div>
 </div>
@@ -172,7 +172,7 @@ export default function Customer() {
 
       {/* Customer Cards */}
       {loading ? (
-        <p className="text-center text-gray-500 mt-10">Loading customers...</p>
+        <p className="text-center text-gray-500 mt-10">Loading students...</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {paginatedCustomers.length > 0 ? (
@@ -185,7 +185,7 @@ export default function Customer() {
             ))
           ) : (
             <p className="text-gray-500 col-span-full text-center">
-              No customers found 😕
+              No students found 😕
             </p>
           )}
         </div>

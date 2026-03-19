@@ -26,6 +26,7 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
 Route::prefix('dashboard')->middleware(['auth:sanctum', 'superadminoradminorbranch'])->group(function () {
 Route::get('/', [DashboardController::class, 'index']);
+ Route::get('/dropouts', [DashboardController::class, 'dropouts']);
 });
 // customer Api
 Route::prefix('customers')->middleware(['auth:sanctum', 'superadminoradminorbranch'])->group(function () {
@@ -33,11 +34,15 @@ Route::prefix('customers')->middleware(['auth:sanctum', 'superadminoradminorbran
     Route::post('/', [CustomerController::class, 'store']); 
     Route::get('/{id}', [CustomerController::class, 'show']); 
     Route::put('/{id}', [CustomerController::class, 'update']); // Update customer
-    Route::delete('/{id}', [CustomerController::class, 'destroy']); // Delete customer
+   
     Route::post('/approve-to-applicant/{id}', [CustomerController::class, 'approveToApplicant']);
+    Route::post('/convert-to-dropout/{id}', [CustomerController::class, 'convertToDropout']);
+    Route::post('/convert-to-customer/{id}', [CustomerController::class, 'convertToCustomer']);
+   
 });
-
-
+Route::prefix('customers')->middleware(['auth:sanctum', 'superadminoradmin'])->group(function () {
+ Route::delete('/{id}', [CustomerController::class, 'destroy']); // Delete customer
+});
 // employee Api
 Route::prefix('employees')->middleware(['auth:sanctum', 'superadminoradmin'])->group(function () {
     Route::get('/', [EmployeeController::class, 'index']);   

@@ -21,6 +21,7 @@ export default function ApplicationInfoForm({ applicant, onCancel, onSubmit }) {
     intake: "",
     coe_charge: "",
     documentation_charge: "",
+    remarks: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -52,6 +53,7 @@ export default function ApplicationInfoForm({ applicant, onCancel, onSubmit }) {
         intake: applicantData.intake || "",
         coe_charge: applicantData.coe_charge || "",
         documentation_charge: applicantData.documentation_charge || "",
+        remarks: applicantData.remarks || "",
       });
     }
   }, [applicantData]);
@@ -63,11 +65,11 @@ export default function ApplicationInfoForm({ applicant, onCancel, onSubmit }) {
   };
 
   // When new intake is added via + Add
-  const handleAddIntake = (newIntake) => {
-    setIntakes((prev) => [...prev, newIntake]);
-    setFormData((prev) => ({ ...prev, intake: newIntake.id }));
-    setShowIntakeForm(false);
-  };
+const handleAddIntake = async (newIntake) => {
+  await fetchIntakes();
+  setFormData((prev) => ({ ...prev, intake: newIntake.name }));
+  setShowIntakeForm(false);
+};
 
   // Submit form (POST if no applicantData, PUT if exists)
   const handleSubmit = async (e) => {
@@ -142,7 +144,7 @@ export default function ApplicationInfoForm({ applicant, onCancel, onSubmit }) {
               value={formData.applied_city}
               onChange={handleChange}
               className="w-full mt-1 border rounded-lg px-3 py-2"
-              required
+              
             />
           </div>
 
@@ -154,7 +156,7 @@ export default function ApplicationInfoForm({ applicant, onCancel, onSubmit }) {
               value={formData.applied_college}
               onChange={handleChange}
               className="w-full mt-1 border rounded-lg px-3 py-2"
-              required
+              
             />
           </div>
 
@@ -166,7 +168,7 @@ export default function ApplicationInfoForm({ applicant, onCancel, onSubmit }) {
                 value={formData.intake}
                 onChange={handleChange}
                 className="w-full border rounded-lg px-3 py-2"
-                required
+               
               >
                 <option value="">Select Intake</option>
                 {intakes.map((item) => (
@@ -175,6 +177,8 @@ export default function ApplicationInfoForm({ applicant, onCancel, onSubmit }) {
                   </option>
                 ))}
               </select>
+
+        
               <button
                 type="button"
                 onClick={() => setShowIntakeForm(true)}
@@ -193,7 +197,7 @@ export default function ApplicationInfoForm({ applicant, onCancel, onSubmit }) {
               value={formData.coe_charge}
               onChange={handleChange}
               className="w-full mt-1 border rounded-lg px-3 py-2"
-              required
+             
             />
           </div>
 
@@ -205,7 +209,19 @@ export default function ApplicationInfoForm({ applicant, onCancel, onSubmit }) {
               value={formData.documentation_charge}
               onChange={handleChange}
               className="w-full mt-1 border rounded-lg px-3 py-2"
-              required
+             
+            />
+          </div>
+
+                <div>
+            <label className="text-sm text-gray-600">Remarks</label>
+            <input
+              type="text"
+              name="remarks"
+              value={formData.remarks}
+              onChange={handleChange}
+              className="w-full mt-1 border rounded-lg px-3 py-2"
+              
             />
           </div>
         </div>

@@ -11,22 +11,28 @@ class UserManagementController extends Controller
 {
 
     // Get all users
-    public function index()
-    {
+public function index()
+{
+    $user = Auth::user();
+    $role = $user->role;
+    $id = $user->id;
 
-     $user = Auth::user();
-        $role = $user->role;
-        $id = $user->id;
-         if ($role === 'superadmin') {
-        $users = User::select('id','name','email','role','created_at')
-                     ->latest()
-                     ->get();
-         }
-        return response()->json([
-            'success' => true,
-            'users' => $users
-        ]);
+    $users = [];
+
+    if ($role === 'superadmin') {
+        $users = User::select('id', 'name', 'email', 'role', 'created_at')
+            ->where('role', 'superadmin')
+            ->orwhere('role', 'admin')
+            ->orWhere('role', 'branch')
+            ->latest()
+            ->get();
     }
+
+    return response()->json([
+        'success' => true,
+        'users' => $users
+    ]);
+}
 
     // Create user
     public function store(Request $request)

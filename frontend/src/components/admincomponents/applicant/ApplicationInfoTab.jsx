@@ -64,6 +64,13 @@ export default function ApplicationInfoTab({ applicant }) {
           </p>
         </div>
 
+          <div>
+          <p className="text-sm text-gray-500">Remarks</p>
+          <p className="font-medium">
+            {applicant.applicants?.remarks || "null"}
+          </p>
+        </div>
+
       </div>
 
       <div className="mt-6">

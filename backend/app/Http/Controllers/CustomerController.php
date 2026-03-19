@@ -40,18 +40,18 @@ public function index(){
         // Log::info($request->all());
         $validated = $request->validate([
             'name'            => 'required|string|max:255',
-            'email'           => 'required|email|max:255',
-            'address'         => 'required|string|max:255',
-            'phone'           => 'required|string|max:20',
+            'email'           => 'nullable|email|max:255',
+            'address'         => 'nullable|string|max:255',
+            'phone'           => 'nullable|string|max:20',
             'father_name'    => 'nullable|string|max:255',
             'mother_name'    => 'nullable|string|max:255',
             'father_phone'  => 'nullable|string|max:20',
             'mother_phone'  => 'nullable|string|max:20',
-            'gender'         => 'required|string',
-            'education'      => 'required|string',
-            'course'         => 'required|string',
-            'study_time'     => 'required|string',
-            'desire_city'    => 'required|string|max:255',
+            'gender'         => 'nullable|string',
+            'education'      => 'nullable|string',
+            'course'         => 'nullable|string',
+            'study_time'     => 'nullable|string',
+            'desire_city'    => 'nullable|string|max:255',
             'referral_type' => 'nullable|string|max:255',
             'referral_name' => 'nullable|string|max:255',
             'referral_phone'=> 'nullable|string|max:20',
@@ -93,18 +93,18 @@ public function index(){
 
         $validated = $request->validate([
             'name'            => 'sometimes|required|string|max:255',
-            'email'           => 'sometimes|required|email|max:255',
-            'address'         => 'sometimes|required|string|max:255',
-            'phone'           => 'sometimes|required|string|max:20',
+            'email'           => 'nullable|email|max:255',
+            'address'         => 'nullable|string|max:255',
+            'phone'           => 'nullable|string|max:20',
             'father_name'    => 'nullable|string|max:255',
             'mother_name'    => 'nullable|string|max:255',
             'father_phone'  => 'nullable|string|max:20',
             'mother_phone'  => 'nullable|string|max:20',
-            'gender'         => 'sometimes|required|string',
-            'education'      => 'sometimes|required|string',
-            'course'         => 'sometimes|required|string',
-            'study_time'     => 'sometimes|required|string',
-            'desire_city'    => 'sometimes|required|string|max:255',
+            'gender'         => 'nullable|string',
+            'education'      => 'nullable|string',
+            'course'         => 'nullable|string',
+            'study_time'     => 'nullable|string',
+            'desire_city'    => 'nullable|string|max:255',
             'referral_type' => 'nullable|string|max:255',
             'referral_name' => 'nullable|string|max:255',
             'referral_phone'=> 'nullable|string|max:20',
@@ -142,15 +142,51 @@ public function index(){
         $data = CustomerModel::find($id);
 
         if (!$data) {
-            return response()->json(['message' => 'Employee not found'], 404);
+            return response()->json(['message' => 'Customer not found'], 404);
         }
         $data->update(['status' => 1]);
-                Log::info($data);
+                
 
         return response()->json([
-            'message' => 'Employee approved successfully',
+            'message' => 'Customer approved successfully',
             'data' => $data
         ], 200);
     }
+   public function convertToDropout(Request $request, $id)
+{
+    $data = CustomerModel::find($id);
+
+    if (!$data) {
+        return response()->json(['message' => 'customer not found'], 404);
+    }
+
+    // Update status and remarks
+    $data->update([
+        'status' => 11,
+        'remarks' => $request->input('remarks') // get remarks from request
+    ]);
+
+    return response()->json([
+        'message' => 'Customer dropout successfully',
+        'data' => $data
+    ], 200);
+}
+     public function convertToCustomer($id)
+    {
+        $data = CustomerModel::find($id);
+
+        if (!$data) {
+            return response()->json(['message' => 'Customer not found'], 404);
+        }
+        $data->update(['status' => 0]);
+                
+
+        return response()->json([
+            'message' => 'Customer converted successfully',
+            'data' => $data
+        ], 200);
+    }
+
+
 
 }

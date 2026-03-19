@@ -53,12 +53,23 @@ export default function ApplicantView( ) {
       {activeTab === "application" && (
         <ApplicationInfoTab applicant={applicant} />
       )}
-      {activeTab === "documents" && (
-        <DocumentsTab applicant={applicant} />
-      )}
-      {activeTab === "coe" && (
-        <COEStatusTab applicant={applicant} />
-      )}
+
+{applicant?.applicants ? (
+  <>
+    {activeTab === "documents" && <DocumentsTab applicant={applicant} />}
+    {activeTab === "coe" && <COEStatusTab applicant={applicant} />}
+  </>
+) : (
+  (activeTab === "documents" || activeTab === "coe") && (
+    <div className="p-3 mb-3 rounded-md bg-yellow-100 text-yellow-800 border border-yellow-300">
+      First add the applicant data.
+    </div>
+  )
+)}
+
+
+
+
     </div>
   );
 }

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\CustomerModel;
 use App\Models\EmployeeModel;
+use App\Models\User;
 use App\Models\Applicant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
@@ -32,7 +34,7 @@ class DashboardController extends Controller
         if (in_array($role, ['admin','superadmin'])) {
 
             // TOTAL COUNTS
-            $customers = CustomerModel::count();
+            $customers = CustomerModel::where('status',0)->count();
 
             $employees = EmployeeModel::count();
 
@@ -50,7 +52,7 @@ class DashboardController extends Controller
                     ->count();
 
             // LAST MONTH
-            $customersLastMonth = CustomerModel::whereMonth('created_at', $lastMonth)
+            $customersLastMonth = CustomerModel::where('status',0)->whereMonth('created_at', $lastMonth)
                 ->whereYear('created_at', $lastMonthYear)
                 ->count();
 
@@ -62,13 +64,13 @@ class DashboardController extends Controller
         } elseif ($role === 'branch') {
 
             // TOTAL COUNTS FOR BRANCH
-            $customers = CustomerModel::where('user_id', $id)->count();
+            $customers = CustomerModel::where('status',0)->where('user_id', $id)->count();
             $employees = EmployeeModel::where('user_id', $id)->count();
 
             $applicants =CustomerModel::where('status',1)->where('user_id', $id)->count();
 
             // CURRENT MONTH
-            $customersThisMonth = CustomerModel::where('user_id', $id)
+            $customersThisMonth = CustomerModel::where('status',0)->where('user_id', $id)
                 ->whereMonth('created_at', $currentMonth)
                 ->whereYear('created_at', $currentYear)
                 ->count();
@@ -80,7 +82,7 @@ class DashboardController extends Controller
                 ->count();
 
             // LAST MONTH
-            $customersLastMonth = CustomerModel::where('user_id', $id)
+            $customersLastMonth = CustomerModel::where('status',0)->where('user_id', $id)
                 ->whereMonth('created_at', $lastMonth)
                 ->whereYear('created_at', $lastMonthYear)
                 ->count();
@@ -113,4 +115,35 @@ class DashboardController extends Controller
 
         ],200);
     }
+
+        public function dropouts()
+{
+    
+    $id = Auth::user()->id;
+    $role = User::find($id)->role;
+
+    if ($role == "superadmin" || $role == "admin") {
+
+        $data = CustomerModel::with('user')
+            ->where('status', 11)
+            ->get();
+
+    } elseif ($role == "branch") {
+
+        $data = CustomerModel::with('user')
+            ->where('status', 11)
+            ->where('user_id', $id)
+            ->get();
+
+    } else {
+        return response()->json([
+            'message' => 'Unauthorized'
+        ], 403);
+    }
+
+    return response()->json([
+        'message' => 'Dropout students fetched successfully',
+        'data' => $data
+    ], 200);
+}
 }

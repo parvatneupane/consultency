@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Welcome from "./pages/Welcome";
 import Dashboard from "./pages/adminpages/Dashboard";
+import DropoutStudents from "./components/admincomponents/dashboard/DropoutStudents";
 import AddCustomer from "./pages/adminpages/AddCustomer";
 import Customer from "./pages/adminpages/Customer";
 import CustomerView from "./components/admincomponents/customer/CustomerView";
@@ -27,7 +28,7 @@ import ProtectedRoute from "./components/admincomponents/ProtectedRoute";
 
 export default function App() {
   return (
-    <BrowserRouter>
+   
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Welcome />} />
@@ -45,6 +46,15 @@ export default function App() {
           element={
             <ProtectedRoute roles={["superadmin","admin", "branch"]}>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+          <Route
+          path="/dropout"
+          element={
+            <ProtectedRoute roles={["superadmin","admin", "branch"]}>
+              <DropoutStudents />
             </ProtectedRoute>
           }
         />
@@ -161,6 +171,6 @@ export default function App() {
           }
         />
       </Routes>
-    </BrowserRouter>
+    
   );
 }

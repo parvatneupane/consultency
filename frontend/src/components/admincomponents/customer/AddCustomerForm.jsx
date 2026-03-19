@@ -56,7 +56,7 @@ const handleaddcustomer = async (e) => {
 );
 
 
-    toast.success("Customer added successfully 🎉");
+    toast.success("Student added successfully 🎉");
     e.target.reset();
     setIsReferred("no");
     setReferralType("");
@@ -82,10 +82,10 @@ const handleaddcustomer = async (e) => {
 
         <form className="grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleaddcustomer}>
 
-          {/* Customer Name */}
+          {/* Student Name */}
           <div>
             <label className=" text-sm font-medium text-gray-700 mb-1">
-              Customer Name
+              Student Name
             </label>
             <input type="text"
               name="name"
@@ -103,7 +103,7 @@ const handleaddcustomer = async (e) => {
             <input
               type="email"
               name="email"
-              required
+             
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
@@ -116,7 +116,7 @@ const handleaddcustomer = async (e) => {
             <input
               type="text"
               name="address"
-              required
+              
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
@@ -129,7 +129,7 @@ const handleaddcustomer = async (e) => {
             <input
               type="text"
               name="phone"
-              required
+              
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
@@ -212,6 +212,7 @@ const handleaddcustomer = async (e) => {
               name="education"
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
+              <option value="">Select Education</option>
               <option value="see">SEE</option>
               <option value="+2">+2</option>
               <option value="bachelor">Bachelor</option>
@@ -228,6 +229,7 @@ const handleaddcustomer = async (e) => {
               name="course"
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
+              <option value="">Select Cource</option>
               <option value="studentvisa">Student Visa</option>
               <option value="ssw">SSW</option>
               <option value="japanese">Japanese</option>
@@ -243,6 +245,7 @@ const handleaddcustomer = async (e) => {
               name="study_time"
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
+              <option value="">Select Time</option>
               <option value="morning">Morning</option>
               <option value="day">Day</option>
               <option value="evening">Evening</option>
@@ -361,7 +364,7 @@ const handleaddcustomer = async (e) => {
             <input
               type="text"
               name="remarks"
-              required
+              
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>

@@ -15,7 +15,7 @@ class Applicant extends Model
     'intake',
     'coe_charge',
     'documentation_charge',
-    'coe_status',
+    'remarks',
     'status',
     ];
 

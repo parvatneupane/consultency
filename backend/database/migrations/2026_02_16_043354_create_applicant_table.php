@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('coe_charge')->nullable();
 
             $table->integer('documentation_charge')->nullable();
-            $table->integer('coe_status')->default(0);
+            $table->string('remarks')->nullable();
             $table->integer('status')->default(0);
             $table->timestamps();
         });

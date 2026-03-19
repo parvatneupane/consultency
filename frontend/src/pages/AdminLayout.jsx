@@ -67,7 +67,7 @@ export default function AdminLayout({ children }) {
           </Link>
 
           <Link to="/customer" className={isActive("/customer") ? activeClass : normalClass}>
-            <Users size={20} /> View Customer
+            <Users size={20} /> View Student
           </Link>
 
             {/* Only ADMIN can see employee */}

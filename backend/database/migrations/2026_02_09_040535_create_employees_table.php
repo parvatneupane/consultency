@@ -11,11 +11,11 @@ return new class extends Migration {
             //branches
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->nullable();
             $table->string('name');
-            $table->string('address');
-            $table->string('phone');
-            $table->string('designation');
-            $table->decimal('monthly_salary', 10, 2);
-            $table->string('remarks');
+            $table->string('address')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('designation')->nullable();
+            $table->decimal('monthly_salary', 10, 2)->nullable();
+            $table->string('remarks')->nullable();
             $table->string('pan_scan')->nullable();
             $table->string('document_scan')->nullable();
 

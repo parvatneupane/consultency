@@ -133,11 +133,16 @@ export default function Applicants() {
         </div>
 
         {/* Table */}
-        {loading ? (
-          <div className="p-6 text-gray-500">Loading applicants...</div>
-        ) : (
-          <ApplicantsTable applicants={filteredApplicants} />
-        )}
+          {loading ? (
+            <div className="p-6 text-gray-500">Loading applicants...</div>
+          ) : (
+            <ApplicantsTable
+              applicants={filteredApplicants}
+              refresh={(customerId) => {
+                setAllApplicants((prev) => prev.filter((item) => item.id !== customerId));
+              }}
+            />
+          )}
       </div>
     </AdminLayout>
   );

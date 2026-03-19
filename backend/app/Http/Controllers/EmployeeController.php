@@ -45,11 +45,11 @@ public function getBranches()
     {
         $validated = $request->validate([
             'name'           => 'required|string|max:255',
-            'address'        => 'required|string|max:255',
-            'phone'          => 'required|string|max:20',
-            'designation'    => 'required|string|max:255',
-            'monthly_salary' => 'required|numeric',
-            'remarks'        => 'required|string|max:255',
+            'address'        => 'nullable|string|max:255',
+            'phone'          => 'nullable|string|max:20',
+            'designation'    => 'nullable|string|max:255',
+            'monthly_salary' => 'nullable|numeric',
+            'remarks'        => 'nullable|string|max:255',
             'pan_scan'       => 'nullable|file|mimes:jpg,jpeg,png,pdf',
             'document_scan'  => 'nullable|file|mimes:jpg,jpeg,png,pdf',
         ]);
@@ -108,11 +108,11 @@ public function getBranches()
 
         $validated = $request->validate([
             'name'           => 'required|string|max:255',
-            'address'        => 'required|string|max:255',
-            'phone'          => 'required|string|max:20',
-            'designation'    => 'required|string|max:255',
-            'monthly_salary' => 'required|numeric',
-            'remarks'        => 'required|string|max:255',
+            'address'        => 'nullable|string|max:255',
+            'phone'          => 'nullable|string|max:20',
+            'designation'    => 'nullable|string|max:255',
+            'monthly_salary' => 'nullable|numeric',
+            'remarks'        => 'nullable|string|max:255',
             'pan_scan'       => 'nullable|file|mimes:jpg,jpeg,png,pdf',
             'document_scan'  => 'nullable|file|mimes:jpg,jpeg,png,pdf',
         ]);

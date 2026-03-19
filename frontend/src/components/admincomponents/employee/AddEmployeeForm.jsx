@@ -131,7 +131,7 @@ export default function AddEmployeeForm() {
             <input
               type="text"
               name="address"
-              required
+              
               value={formData.address}
               onChange={handleChange}
               className="w-full px-4 py-2.5 rounded-xl border"
@@ -144,7 +144,7 @@ export default function AddEmployeeForm() {
             <input
               type="text"
               name="phone"
-              required
+             
               value={formData.phone}
               onChange={handleChange}
               className="w-full px-4 py-2.5 rounded-xl border"
@@ -159,7 +159,7 @@ export default function AddEmployeeForm() {
             <input
               type="text"
               name="designation"
-              required
+              
               value={formData.designation}
               onChange={handleChange}
               className="w-full px-4 py-2.5 rounded-xl border"
@@ -174,7 +174,7 @@ export default function AddEmployeeForm() {
             <input
               type="number"
               name="monthly_salary"
-              required
+              
               value={formData.monthly_salary}
               onChange={handleChange}
               className="w-full px-4 py-2.5 rounded-xl border"

@@ -71,7 +71,7 @@ public function index()
              'intake'               => 'nullable|string|max:255',
             'coe_charge'    => 'nullable|integer',
             'documentation_charge' => 'nullable|integer',
-            'coe_status'    => 'nullable|integer',
+            'remarks'    => 'nullable|string|max:500',
             'status'        => 'nullable|integer',
         ]);
 
@@ -95,6 +95,7 @@ public function update(Request $request, $id)
         'intake'               => 'nullable|string|max:255',
         'coe_charge'           => 'nullable|integer',
         'documentation_charge' => 'nullable|integer',
+        'remarks'    => 'nullable|string|max:500',
     ]);
 
     $applicant->update($validated);

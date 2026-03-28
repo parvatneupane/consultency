@@ -81,6 +81,7 @@ Route::get('/{id}', [IntakeController::class, 'show']);
 Route::prefix('document')->middleware(['auth:sanctum', 'superadminoradminorbranch'])->group(function () {
  Route::get('/applicant/{id}', [ApplicantDocumentController::class, 'byApplicant']);
     Route::post('/', [ApplicantDocumentController::class, 'store']);
+    Route::get('/download/{id}', [ApplicantDocumentController::class, 'download']);
     Route::delete('/{id}', [ApplicantDocumentController::class, 'destroy']);
 
 });

@@ -79,4 +79,34 @@ class ApplicantDocumentController extends Controller
             'message' => 'Document deleted successfully'
         ], 200);
     }
+
+public function download($id)
+{
+    $document = ApplicantDocument::find($id);
+
+    if (!$document || !$document->document) {
+        return response()->json([
+            'message' => 'File not found'
+        ], 404);
+    }
+
+    $path = storage_path('app/public/' . $document->document);
+
+    if (!file_exists($path)) {
+        return response()->json([
+            'message' => 'File does not exist'
+        ], 404);
+    }
+
+    // Get the original extension from stored file
+    $extension = pathinfo($path, PATHINFO_EXTENSION);
+
+    // Add extension to the download filename
+    $downloadName = $document->document_title;
+    if (!str_ends_with($downloadName, '.' . $extension)) {
+        $downloadName .= '.' . $extension;
+    }
+
+    return response()->download($path, $downloadName);
+}
 }

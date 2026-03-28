@@ -22,6 +22,8 @@ export default function PersonalInfoTab({ applicant }) {
   const navigate = useNavigate();
   const token = localStorage.getItem("auth_token");
 
+  const data = JSON.parse(localStorage.getItem("user"));
+
   const handleDelete = async () => {
 
     if (!window.confirm("Are you sure you want to delete this customer?")) {
@@ -54,6 +56,7 @@ export default function PersonalInfoTab({ applicant }) {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold">Personal Information</h2>
 
+        {( data?.role === "superadmin" || data?.role === "admin")  && (
         <button
           onClick={handleDelete}
           className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
@@ -61,6 +64,7 @@ export default function PersonalInfoTab({ applicant }) {
           <Trash2 size={16} />
           Delete
         </button>
+        )}
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">

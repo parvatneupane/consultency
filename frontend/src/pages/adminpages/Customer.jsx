@@ -7,7 +7,7 @@ import api from "../../api";
 
 export default function Customer() {
   const token = localStorage.getItem("auth_token");
-
+  const data = localStorage.getItem("user");
   const [allCustomers, setAllCustomers] = useState([]);
   const [search, setSearch] = useState("");
   const [filterStudyTime, setFilterStudyTime] = useState("all");
@@ -124,6 +124,8 @@ export default function Customer() {
     </select>
 
     {/* Branch */}
+
+      {( data?.role === "superadmin" || data?.role === "admin")  && (
     <select
       value={filterBranch}
       onChange={(e) => {
@@ -139,6 +141,7 @@ export default function Customer() {
         </option>
       ))}
     </select>
+      )}
 
     {/* Course */}
     <select

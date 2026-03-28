@@ -8,6 +8,7 @@ import AddIntakeForm from "./AddIntakeForm";
 export default function ApplicationInfoForm({ applicant, onCancel, onSubmit }) {
   const navigate = useNavigate();
   const token = localStorage.getItem("auth_token");
+   const data = JSON.parse(localStorage.getItem("user"));
 
   // Determine existing applicant data
   const applicantData = Array.isArray(applicant.applicants)
@@ -178,7 +179,7 @@ const handleAddIntake = async (newIntake) => {
                 ))}
               </select>
 
-        
+               {( data?.role === "superadmin" || data?.role === "admin")  && (
               <button
                 type="button"
                 onClick={() => setShowIntakeForm(true)}
@@ -186,6 +187,8 @@ const handleAddIntake = async (newIntake) => {
               >
                 + Add
               </button>
+
+               )}
             </div>
           </div>
 

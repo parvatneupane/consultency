@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function Applicants() {
   const token = localStorage.getItem("auth_token");
+  const data = JSON.parse(localStorage.getItem("user"));
   const [allApplicants, setAllApplicants] = useState([]);
   const [filteredApplicants, setFilteredApplicants] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -86,7 +87,7 @@ export default function Applicants() {
             onChange={(e) => setSearch(e.target.value)}
             className="border px-3 py-2 rounded-lg w-64"
           />
-
+            {( data?.role === "superadmin" || data?.role === "admin")  && (
           <select
             value={branchFilter}
             onChange={(e) => setBranchFilter(e.target.value)}
@@ -97,6 +98,8 @@ export default function Applicants() {
               <option key={b} value={b}>{b}</option>
             ))}
           </select>
+
+          )}
 
           <select
             value={intakeFilter}

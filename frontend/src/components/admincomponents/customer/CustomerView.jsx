@@ -23,6 +23,7 @@ export default function CustomerView() {
   const navigate = useNavigate();
   const customer = state;
   const token = localStorage.getItem("auth_token");
+  const data = JSON.parse(localStorage.getItem("user"));
 
   const handleDelete = async () => {
   if (!window.confirm("Are you sure you want to delete this customer?")) {
@@ -79,6 +80,8 @@ export default function CustomerView() {
 
 
           {/* Delete Button */}
+
+            {( data?.role === "superadmin" || data?.role === "admin")  && (
               <button
                 onClick={handleDelete}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl 
@@ -90,7 +93,7 @@ export default function CustomerView() {
                 <Trash2 size={18} />
                 Delete
               </button>
-
+            )}
 
           {/* Back Button */}
           <button

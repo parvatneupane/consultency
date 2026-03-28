@@ -43,6 +43,41 @@ export default function DocumentsTab({ applicant }) {
     }
   };
 
+  // ✅ Download handler
+  const handleDownload = async (id, filename) => {
+    try {
+      const response = await api.get(`/api/document/download/${id}`, {
+        responseType: "blob",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Determine correct extension from blob MIME type
+      const mimeType = response.data.type; // application/pdf, image/jpeg, etc.
+      let ext = "";
+      if (mimeType === "application/pdf") ext = ".pdf";
+      else if (mimeType === "image/jpeg") ext = ".jpg";
+      else if (mimeType === "image/png") ext = ".png";
+
+      // Append extension if missing
+      if (!filename.toLowerCase().endsWith(ext)) {
+        filename += ext;
+      }
+
+      // Create blob URL and download
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: mimeType }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download failed:", error);
+      alert("Failed to download document.");
+    }
+  };
+
   // Refresh after upload
   const handleUploaded = async () => {
     setShowForm(false);
@@ -83,34 +118,38 @@ export default function DocumentsTab({ applicant }) {
                 </p>
 
                 {/* Preview PDFs and images */}
-                {doc.document_url && (doc.document_url.endsWith(".pdf") || /\.(jpg|jpeg|png)$/i.test(doc.document_url)) && (
-                  <iframe
-                    src={doc.document_url}
-                    className="w-full h-36 border border-gray-200 rounded mb-2"
-                    title={doc.document_title}
-                  />
-                )}
+                {doc.document_url &&
+                  (doc.document_url.endsWith(".pdf") ||
+                    /\.(jpg|jpeg|png)$/i.test(doc.document_url)) && (
+                    <iframe
+                      src={doc.document_url}
+                      className="w-full h-36 border border-gray-200 rounded mb-2"
+                      title={doc.document_title}
+                    />
+                  )}
 
                 <div className="flex flex-wrap gap-2">
+                  {/* View */}
                   {doc.document_url && (
-                    <>
-                      <a
-                        href={doc.document_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-                      >
-                        <ExternalLink size={14} /> View
-                      </a>
-                      <a
-                        href={doc.document_url}
-                        download={doc.document_title}
-                        className="inline-flex items-center gap-1 px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition"
-                      >
-                        <Download size={14} /> Download
-                      </a>
-                    </>
+                    <a
+                      href={doc.document_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                    >
+                      <ExternalLink size={14} /> View
+                    </a>
                   )}
+
+                  {/* Download */}
+                  <button
+                    onClick={() => handleDownload(doc.id, doc.document_title)}
+                    className="inline-flex items-center gap-1 px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition"
+                  >
+                    <Download size={14} /> Download
+                  </button>
+
+                  {/* Delete */}
                   <button
                     onClick={() => handleDelete(doc.id)}
                     className="inline-flex items-center gap-1 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
